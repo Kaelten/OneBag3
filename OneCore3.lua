@@ -98,19 +98,6 @@ function OneCore3:BuildFrame(basename, moneyType)
 	frame.moneyframe = self:BuildSmallMoneyFrame("MoneyFrame", frame, moneyType)
 	frame.moneyframe:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 5, 7)
 	
-	--[[frame.searchbox = self:BuildEditBox(frame:GetName().."SearchBox", frame)
-	frame.searchbox:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -10)
-	
-	-- SearchBox Behaviors
-	frame.searchbox:SetScript("OnTextChanged", function()
-		frame.handler:Search(this:GetText())
-	end)
-	
-	frame.searchbox:SetScript("OnShow", function()
-		this:SetText('')
-		frame.handler:ResetMarks()
-	end)
-	]]
 	-- Default Behaviors
 	tinsert(UISpecialFrames, frame:GetName())
 	frame:SetScript("OnDragStart", function()
@@ -136,6 +123,15 @@ function OneCore3:BuildFrame(basename, moneyType)
 	end)
 	
 	return frame
+end
+
+function OneCore3:BuildSideBar(basename, frame)
+	local sidebar = self:BuildBaseFrame(basename)
+	
+	sidebar:SetSize(60, 223)
+	sidebar:SetPosition({top=0, left=0, parent=frame:GetName(), attachAt="TOPRIGHT", attachTo="TOPLEFT"})
+	
+	return sidebar
 end
 
 function OneCore3:BuildBaseFrame(basename)

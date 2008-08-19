@@ -36,19 +36,149 @@ function OneBag3:OnInitialize()
 		self:RegisterEvent("BAG_UPDATE", UpdateBag)
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
+		
+		self.sidebar:Show()
 	end)
 	
 	self.frame:SetScript("OnHide", function()
 		self:UnregisterEvent("BAG_UPDATE")
 		self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
 		self:UnregisterEvent("UPDATE_INVENTORY_ALERTS")
+		
+		self.sidebar:Hide()
+	end)
+	
+	self.sidebar = OneCore3:BuildSideBar("OneBagSideFrame", self.frame)
+	self.sidebar.handler = self
+	
+	self.sidebar:CustomizeFrame(self.db.profile)
+	
+	self.sidebar:SetScript("OnShow", function()
+		if not self.sidebar.buttons then
+			self.sidebar.buttons = {}
+			local button = self:GetBackbackButton(self.sidebar)
+			button:ClearAllPoints()
+			button:SetPoint("TOP", self.sidebar, "TOP", 0, -15)
+			
+			self.sidebar.buttons[-1] = button
+			for bag=0, 3 do
+				local button = self:GetBagButton(bag, self.sidebar)
+				button:ClearAllPoints()
+				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
+				
+				self.sidebar.buttons[bag] = button
+			end
+		end
 	end)
 	
 end
 
 function OneBag3:OnEnable()
+	self:SecureHook("IsBagOpen")
+	self:RawHook("ToggleBag", true)
+	self:RawHook("OpenBag", true)
+	self:RawHook("CloseBag", true)
+	self:RawHook("OpenBackpack", "OpenBag", true)
+	self:RawHook("CloseBackpack", "CloseBag", true)
+	self:RawHook("ToggleBackpack", "ToggleBag", true)
 	
+	local open = function() self:OpenBag() end
+	local close = function() self:CloseBag() end
+	
+	self:RegisterEvent("AUCTION_HOUSE_SHOW", 	open)
+	self:RegisterEvent("AUCTION_HOUSE_CLOSED", 	close)
+	self:RegisterEvent("BANKFRAME_OPENED", 		open)
+	self:RegisterEvent("BANKFRAME_CLOSED", 		close)
+	self:RegisterEvent("MAIL_CLOSED", 			close)
+	self:RegisterEvent("MERCHANT_SHOW", 		open)
+	self:RegisterEvent("MERCHANT_CLOSED", 		close)
+	self:RegisterEvent("TRADE_SHOW", 			open)
+	self:RegisterEvent("TRADE_CLOSED", 			close)
+	self:RegisterEvent("GUILDBANKFRAME_OPENED", 			open)
+	self:RegisterEvent("GUILDBANKFRAME_CLOSED", 			close)
+end
 
+-- Hooks handlers
+function OneBag3:IsBagOpen(bag)
+	if bag < 0 or bag > 4 then
+		return 
+	end
+	
+	if self.frame:IsVisible() then
+		return bag
+	else
+		return nil	
+	end
+end
+
+function OneBag3:ToggleBag(bag)
+	if bag and (bag < 0 or bag > 4) then
+		return self.hooks.ToggleBag(bag)
+	end
+	
+	if self.frame:IsVisible() then
+		self.frame:Hide()
+	else
+		self.frame:Show()
+	end
+end
+
+function OneBag3:OpenBag(bag)
+	self:Debug(L["Opening bag %s"], bag)
+	if bag and (bag < 0 or bag > 4) then
+		return self.hooks.OpenBag(bag)
+	end
+	
+	self.frame:Show()
+end
+
+
+function OneBag3:CloseBag(bag)
+	self:Debug(L["Closing bag %s"], bag)
+	if bag and (bag < 0 or bag > 4) then
+		return self.hooks.CloseBag(bag)
+	end
+	
+	self.frame:Hide()
+end
+
+function OneBag3:GetBackbackButton(parent)
+	local button = CreateFrame("CheckButton", "OBSideBarBackpackButton", parent, "ItemButtonTemplate")
+	button:SetID(0)
+	
+	local itemAnim = CreateFrame("Model", "OBSideBarBackpackButtonItemAnim", button, "ItemAnimTemplate")
+	itemAnim:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -10, 0)
+	
+	button:SetCheckedTexture("Interface\\Buttons\\CheckButtonHilight")
+	
+	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+	OBSideBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
+--	OBSideBarBackpackButtonIconTexture:Show()
+	
+	button:SetScript("OnEnter", function()
+		GameTooltip:SetOwner(button, "ANCHOR_LEFT")
+		GameTooltip:SetText(BACKPACK_TOOLTIP, 1.0, 1.0, 1.0)
+		local keyBinding = GetBindingKey("TOGGLEBACKPACK")
+		if ( keyBinding ) then
+			GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..keyBinding..")"..FONT_COLOR_CODE_CLOSE)
+		end
+		GameTooltip:AddLine(string.format(NUM_FREE_SLOTS, (MainMenuBarBackpackButton.freeSlots or 0)))
+		GameTooltip:Show()
+	end)
+	
+	button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	button:SetScript("OnReceiveDrag", function(event, btn) BackpackButton_OnClick(button, btn) end)
+	
+	return button
+	
+end
+
+function OneBag3:GetBagButton(bag, parent)
+	local button = CreateFrame("CheckButton", "OBSideBarBag"..bag.."Slot", parent, "BagSlotButtonTemplate")
+	
+	button:SetScale(1.27)
+	
+	return button
 end
 
 function OneBag3:GetBag(parent, id)
