@@ -37,7 +37,7 @@ function OneBag3:OnInitialize()
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
 		
-		self.sidebar:Show()
+		self.frame.name:SetText(UnitName("player").."'s Bags")
 	end)
 	
 	self.frame:SetScript("OnHide", function()
@@ -50,6 +50,7 @@ function OneBag3:OnInitialize()
 	
 	self.sidebar = OneCore3:BuildSideBar("OneBagSideFrame", self.frame)
 	self.sidebar.handler = self
+	self.frame.sidebar = self.sidebar
 	
 	self.sidebar:CustomizeFrame(self.db.profile)
 	
@@ -70,6 +71,8 @@ function OneBag3:OnInitialize()
 			end
 		end
 	end)
+	
+	self.sidebar:Hide()
 	
 end
 

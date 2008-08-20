@@ -122,6 +122,36 @@ function OneCore3:BuildFrame(basename, moneyType)
         this.isMoving = false
 	end)
 	
+	closeButton = CreateFrame('Button', nil, frame, "UIPanelCloseButton")
+	closeButton:SetPoint("TOPRIGHT", frame)
+	frame.closeButton = closeButton
+	
+	sidebarButton = CreateFrame('CheckButton', nil, frame)
+	sidebarButton:SetHeight(30)
+	sidebarButton:SetWidth(32)
+	
+	sidebarButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -9)
+	sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
+	sidebarButton:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Down")
+	sidebarButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
+	
+	sidebarButton:SetScript("OnClick", function()
+		if sidebarButton:GetChecked() then
+			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
+			frame.sidebar:Show()
+		else
+			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
+			frame.sidebar:Hide()
+		end
+	end)
+	
+	frame.sidebarButton = sidebarButton
+	
+	name = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	name:SetJustifyH("LEFT")
+	name:SetPoint("LEFT", sidebarButton, "RIGHT", 5, 1)
+	frame.name = name
+	
 	return frame
 end
 
