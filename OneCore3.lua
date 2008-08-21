@@ -84,7 +84,7 @@ local ModulePrototype = {
 local white = {r = 1, g = 1, b = 1}
 function ModulePrototype:ColorBorder(slot)
 	local bag = slot:GetParent()
-	local color, special = nil, false
+	local color = white
 	
 	if self.db.profile.appearance.rarity then
 		local hex = (GetContainerItemLink(bag:GetID(), slot:GetID()) or ""):match("(|cff%x%x%x%x%x%x)") 
@@ -92,11 +92,10 @@ function ModulePrototype:ColorBorder(slot)
 		for k, v in ipairs(ITEM_QUALITY_COLORS) do
 			if hex == v.hex then
 				color = v
-				special = true
 			end
 		end
 		
-		if special and self.db.profile.appearance.glow then
+		if color ~= white and self.db.profile.appearance.glow then
 			slot:SetNormalTexture("Interface\\Buttons\\UI-ActionButton-Border")
 	        slot:GetNormalTexture():SetBlendMode("ADD")
 	        slot:GetNormalTexture():SetAlpha(.8)
@@ -107,9 +106,7 @@ function ModulePrototype:ColorBorder(slot)
 	        slot:GetNormalTexture():SetPoint("CENTER", slot:GetName(), "CENTER", 0, 0)
 		end
 		
-		if color then
-			slot:GetNormalTexture():SetVertexColor(color.r, color.g, color.b)
-		end
+		slot:GetNormalTexture():SetVertexColor(color.r, color.g, color.b)
 	end
 end
 

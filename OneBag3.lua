@@ -131,7 +131,6 @@ function OneBag3:ToggleBag(bag)
 end
 
 function OneBag3:OpenBag(bag)
-	self:Debug(L["Opening bag %s"], bag)
 	if bag and (bag < 0 or bag > 4) then
 		return self.hooks.OpenBag(bag)
 	end
@@ -141,7 +140,6 @@ end
 
 
 function OneBag3:CloseBag(bag)
-	self:Debug(L["Closing bag %s"], bag)
 	if bag and (bag < 0 or bag > 4) then
 		return self.hooks.CloseBag(bag)
 	end
