@@ -81,6 +81,12 @@ local ModulePrototype = {
 	},   
 }
 
+function ModulePrototype:ColorBorder(slot)
+	local hex = (GetContainerItemLink(bag:GetID(), slot:GetID())):match("(|cff%x%x%x%x%x%x)") 
+	self:Print(hex)
+
+end
+
 -- OneCore!
 OneCore3 = LibStub("AceAddon-3.0"):NewAddon("OneCore3", "AceEvent-3.0")
 OneCore3:SetDefaultModulePrototype(ModulePrototype)

@@ -38,6 +38,10 @@ function OneBag3:OnInitialize()
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
 		
 		self.frame.name:SetText(UnitName("player").."'s Bags")
+		
+		if self.frame.sidebarButton:GetChecked() then
+			self.frame.sidebar:Show()
+		end
 	end)
 	
 	self.frame:SetScript("OnHide", function()
@@ -196,8 +200,6 @@ end
 
 function OneBag3:GetButton(parent, id)
 	local frame = CreateFrame("Button", parent:GetName().."Item"..id, parent, "ContainerFrameItemButtonTemplate")
-	
-	frame:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
 	frame:SetID(id)
 	
 	frame.meta = {
@@ -256,6 +258,10 @@ function OneBag3:OrganizeFrame()
 	
 	local cols, curCol, curRow, justinc = self.db.profile.appearance.cols, 1, 1, false
 	
+	for slotkey, slot in pairs(self.frame.slots) do
+		slot:Hide()
+	end
+	
 	for slotkey, slot in pairs(self:GetButtonOrder()) do
 		justinc = false
 		slot:ClearAllPoints()
@@ -282,7 +288,9 @@ function OneBag3:UpdateBag(bag)
 	self:BuildFrame()
 	self:OrganizeFrame()
 
-	ContainerFrame_Update(self.frame.bags[bag])
+	if self.frame.bags[bag].size and self.frame.bags[bag].size > 0 then
+		ContainerFrame_Update(self.frame.bags[bag])
+	end
 end
 
 function OneBag3:UpdateFrame()
