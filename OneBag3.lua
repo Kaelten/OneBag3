@@ -287,10 +287,21 @@ function OneBag3:UpdateBag(bag)
 	
 	self:BuildFrame()
 	self:OrganizeFrame()
-
+	
+	if not self.frame.bags[bag].colorLocked then
+		for slot=1, self.frame.bags[bag].size do
+			self:ColorBorder(self:GetSlot(bag, slot))
+		end
+	end
+	
 	if self.frame.bags[bag].size and self.frame.bags[bag].size > 0 then
 		ContainerFrame_Update(self.frame.bags[bag])
 	end
+end
+
+function OneBag3:GetSlot(bagid, slotid)
+	key = ('%s:%s'):format(bagid, slotid)
+	return self.frame.slots[key]
 end
 
 function OneBag3:UpdateFrame()
