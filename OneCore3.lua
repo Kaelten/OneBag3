@@ -81,10 +81,23 @@ local ModulePrototype = {
 	},   
 }
 
-local white = {r = 1, g = 1, b = 1}
+local plain = {r = .05, g = .05, b = .05}
 function ModulePrototype:ColorBorder(slot)
 	local bag = slot:GetParent()
-	local color = white
+	local color = plain
+	
+	if not slot.border then
+		-- Thanks to oglow for this method
+		local border = slot:CreateTexture(nil, "OVERLAY")
+		border:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
+		border:SetBlendMode("ADD")
+        border:SetAlpha(.5)
+		
+		border:SetPoint('CENTER', slot, 'CENTER', 0, 1)
+		border:SetWidth(slot:GetWidth() * 2 - 5)
+		border:SetHeight(slot:GetHeight() * 2 - 5)
+		slot.border = border
+	end
 	
 	if self.db.profile.appearance.rarity then
 		local hex = (GetContainerItemLink(bag:GetID(), slot:GetID()) or ""):match("(|cff%x%x%x%x%x%x)") 
@@ -95,18 +108,28 @@ function ModulePrototype:ColorBorder(slot)
 			end
 		end
 		
-		if color ~= white and self.db.profile.appearance.glow then
-			slot:SetNormalTexture("Interface\\Buttons\\UI-ActionButton-Border")
-	        slot:GetNormalTexture():SetBlendMode("ADD")
-	        slot:GetNormalTexture():SetAlpha(.8)
-	        slot:GetNormalTexture():SetPoint("CENTER", slot:GetName(), "CENTER", 0, 1)
-		else
-			slot:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
-			slot:GetNormalTexture():SetBlendMode("BLEND")
-	        slot:GetNormalTexture():SetPoint("CENTER", slot:GetName(), "CENTER", 0, 0)
+		local texture = slot:GetNormalTexture()		
+		if self.db.profile.appearance.glow and color ~= plain then
+			texture:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
+	        texture:SetBlendMode("ADD")
+	        texture:SetAlpha(.8)
+	        texture:SetPoint("CENTER", slot, "CENTER", 0, 1)
+
+			slot.border:Hide()
+			slot.glowing = true
+		elseif slot.glowing then
+			texture:SetTexture("Interface\\Buttons\\UI-Quickslot2")
+			texture:SetBlendMode("BLEND")
+	        texture:SetPoint("CENTER", slot, "CENTER", 0, 0)
+			texture:SetAlpha(1)
+			texture:SetVertexColor(1, 1, 1)
+			
+			slot.border:Show()
+			slot.glowing = false
 		end
 		
-		slot:GetNormalTexture():SetVertexColor(color.r, color.g, color.b)
+		local target = slot.glowing and texture or slot.border
+		target:SetVertexColor(color.r, color.g, color.b)
 	end
 end
 
