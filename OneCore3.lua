@@ -63,7 +63,7 @@ local ModulePrototype = {
 				cols = 10,
 				scale = 1,
 				alpha = 1,
-				glow = true,
+				glow = false,
 				rarity = true,
 			},
 			behavior = {
