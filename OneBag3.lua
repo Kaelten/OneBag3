@@ -103,6 +103,7 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("TRADE_CLOSED", 			close)
 	self:RegisterEvent("GUILDBANKFRAME_OPENED", 			open)
 	self:RegisterEvent("GUILDBANKFRAME_CLOSED", 			close)
+	
 end
 
 -- Hooks handlers

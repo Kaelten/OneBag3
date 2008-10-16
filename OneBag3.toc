@@ -16,3 +16,4 @@ localizations\locals.xml
 
 OneCore3.lua
 OneBag3.lua
+Config.lua
