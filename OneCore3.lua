@@ -50,10 +50,10 @@ local ModulePrototype = {
     defaults = {
 		profile = {
 			colors = {
-				mouseover = {r = 0, g = .7, b = 1},
-				ammo = {r = 1, g = 1, b = 0},
-				soul = {r = .5, g = .5, b = 1}, 
-				profession = {r = 1, g = 0, b = 1},
+				mouseover = {r = 0, g = .7, b = 1, a = 1},
+				ammo = {r = 1, g = 1, b = 0, a = 1},
+				soul = {r = .5, g = .5, b = 1, a = 1}, 
+				profession = {r = 1, g = 0, b = 1, a = 1},
 				background = {r = 0, g = 0, b = 0, a = .45},
 			},
 			show = {
