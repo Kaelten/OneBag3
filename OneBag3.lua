@@ -23,9 +23,10 @@ function OneBag3:OnInitialize()
 	self.frame:SetScript("OnShow", function()
 		if not self.frame.slots then
 			self.frame.slots = {}
-			self:BuildFrame()
-			self:OrganizeFrame()
 		end
+
+		self:BuildFrame()
+		self:OrganizeFrame()
 		
 		self:UpdateFrame()
 		
@@ -77,6 +78,8 @@ function OneBag3:OnInitialize()
 	end)
 	
 	self.sidebar:Hide()
+	
+	--self:OpenConfig()
 	
 end
 
@@ -250,8 +253,8 @@ function OneBag3:BuildFrame()
 	end
 end
 
-function OneBag3:OrganizeFrame()
-	if not self.doOrganization then
+function OneBag3:OrganizeFrame(force)
+	if not self.doOrganization and not force then
 		return 
 	end
 	

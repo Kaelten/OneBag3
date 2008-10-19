@@ -174,15 +174,11 @@ function OneCore3:BuildFrame(basename, moneyType)
         this.isMoving = false
 	end)
 	
-	closeButton = CreateFrame('Button', nil, frame, "UIPanelCloseButton")
-	closeButton:SetPoint("TOPRIGHT", frame)
-	frame.closeButton = closeButton
-	
-	sidebarButton = CreateFrame('CheckButton', nil, frame)
+	local sidebarButton = CreateFrame('CheckButton', nil, frame)
 	sidebarButton:SetHeight(30)
 	sidebarButton:SetWidth(32)
 	
-	sidebarButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -9)
+	sidebarButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 3, -7)
 	sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
 	sidebarButton:SetPushedTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Down")
 	sidebarButton:SetHighlightTexture("Interface\\Buttons\\UI-Common-MouseHilight", "ADD")
@@ -199,10 +195,25 @@ function OneCore3:BuildFrame(basename, moneyType)
 	
 	frame.sidebarButton = sidebarButton
 	
-	name = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+	local name = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
 	name:SetJustifyH("LEFT")
 	name:SetPoint("LEFT", sidebarButton, "RIGHT", 5, 1)
 	frame.name = name
+	
+	local closeButton = CreateFrame('Button', nil, frame, "UIPanelCloseButton")
+	closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
+	frame.closeButton = closeButton
+	
+	local configButton = CreateFrame('Button', nil, frame, "UIPanelButtonTemplate")
+	configButton:SetHeight(20)
+	configButton:SetWidth(65)
+	
+	configButton:SetText("Config")
+	configButton:SetPoint("RIGHT", closeButton, "LEFT", 0, 0)
+	
+	configButton:SetScript("OnClick", function()
+		frame.handler:OpenConfig()
+	end)
 	
 	return frame
 end
