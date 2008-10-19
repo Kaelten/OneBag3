@@ -92,8 +92,22 @@ local function GetAppearanceOptions(addon)
 					addon.db.profile.appearance.scale = scale
 					addon.frame:CustomizeFrame(addon.db.profile)
 				end,
-				
-			}
+			},
+			alpha = {
+				order = 12,
+				type = "range",
+				name = "Frame Alpha",
+				min = 0,
+				max = 1,
+				step = 0.05,
+				get = function(info)
+					return addon.db.profile.appearance.alpha
+				end,
+				set = function(info, alpha)
+					addon.db.profile.appearance.alpha = alpha
+					addon.frame:CustomizeFrame(addon.db.profile)
+				end,
+			},
 			
 		}
 	}

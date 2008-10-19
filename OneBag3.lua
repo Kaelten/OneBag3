@@ -111,7 +111,7 @@ end
 
 -- Hooks handlers
 function OneBag3:IsBagOpen(bag)
-	if bag < 0 or bag > 4 then
+	if type(bag) == "number" and (bag < 0 or bag > 4) then
 		return 
 	end
 	
@@ -123,7 +123,7 @@ function OneBag3:IsBagOpen(bag)
 end
 
 function OneBag3:ToggleBag(bag)
-	if bag and (bag < 0 or bag > 4) then
+	if type(bag) == "number" and (bag < 0 or bag > 4) then
 		return self.hooks.ToggleBag(bag)
 	end
 	
@@ -135,7 +135,7 @@ function OneBag3:ToggleBag(bag)
 end
 
 function OneBag3:OpenBag(bag)
-	if bag and (bag < 0 or bag > 4) then
+	if type(bag) == "number" and (bag < 0 or bag > 4) then
 		return self.hooks.OpenBag(bag)
 	end
 	
@@ -144,7 +144,7 @@ end
 
 
 function OneBag3:CloseBag(bag)
-	if bag and (bag < 0 or bag > 4) then
+	if type(bag) == "number" and (bag < 0 or bag > 4) then
 		return self.hooks.CloseBag(bag)
 	end
 	
