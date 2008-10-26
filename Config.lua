@@ -23,14 +23,6 @@ show = {
 ]]
 
 local function GetAppearanceOptions(addon)
---[[
-behavior = {
-	strata = 2,
-	locked = false,
-	clamped = true,
-	bagbreak = false,
-},
-]]
 	return {
 		type = "group", 
 		args = {
@@ -39,20 +31,16 @@ behavior = {
 				type = "header",
 				name = "Layout Options"
 			},
-			cols = {
-				order = 2, 
-				type = "range",
-				name = "Number of Columns",
-				min = 1,
-				max = 30,
-				step = 1,
+			locked = {
+				order = 2,
+				type = "toggle",
+				name = "Lock Frame",
 				get = function(info)
-					return addon.db.profile.appearance.cols
+					return addon.db.profile.behavior.locked
 				end,
-				set = function(info, cols)
-					addon.db.profile.appearance.cols = cols
-					addon:OrganizeFrame(true)
-				end	
+				set = function(info, value)
+					addon.db.profile.behavior.locked = value
+				end
 			},
 			clamped = {
 				order = 3,
@@ -66,6 +54,50 @@ behavior = {
 					addon.frame:CustomizeFrame(addon.db.profile)
 				end
 			},
+			bagbreak = {
+				order = 4,
+				type = "toggle",
+				name = "Bag Break",
+				desc = "Forces a rowbreak to happen at the end of each bag.",
+				get = function(info)
+					return addon.db.profile.behavior.bagbreak
+				end,
+				set = function(info, value)
+					addon.db.profile.behavior.bagbreak = value
+					addon:OrganizeFrame(true)
+				end
+			},
+			cols = {
+				order = 5, 
+				type = "range",
+				name = "Number of Columns",
+				min = 1,
+				max = 30,
+				step = 1,
+				get = function(info)
+					return addon.db.profile.appearance.cols
+				end,
+				set = function(info, cols)
+					addon.db.profile.appearance.cols = cols
+					addon:OrganizeFrame(true)
+				end	
+			},
+			strata = {
+				order = 6, 
+				type = "range",
+				name = "Frame Strata",
+				min = 1,
+				max = 5,
+				step = 1,
+				get = function(info)
+					return addon.db.profile.behavior.strata
+				end,
+				set = function(info, value)
+					addon.db.profile.behavior.strata = value
+					addon.frame:CustomizeFrame(addon.db.profile)
+				end	
+			},
+			
 			appearance = {
 				order = 10,
 				type = "header",

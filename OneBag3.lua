@@ -219,7 +219,11 @@ function OneBag3:GetButtonOrder()
 	for _, bagid in pairs(self.bagIndexes) do
 		for slotid = 1, self.frame.bags[bagid].size do
 			tinsert(slots,  self.frame.slots[('%s:%s'):format(bagid, slotid)])
-		end		
+		end	
+		
+		if self.db.profile.behavior.bagbreak then
+			tinsert(slots, "NEWLINE")
+		end
 	end
 
 	return slots
@@ -258,26 +262,31 @@ function OneBag3:OrganizeFrame(force)
 		return 
 	end
 	
-	local cols, curCol, curRow, justinc = self.db.profile.appearance.cols, 1, 1, false
+	local cols, curCol, curRow, maxCol, justinc = self.db.profile.appearance.cols, 1, 1, 0, false
 	
 	for slotkey, slot in pairs(self.frame.slots) do
 		slot:Hide()
 	end
 	
 	for slotkey, slot in pairs(self:GetButtonOrder()) do
-		justinc = false
-		slot:ClearAllPoints()
-		slot:SetPoint("TOPLEFT", self.frame:GetName(), "TOPLEFT", self.leftBorder + self.colWidth * (curCol - 1), 0 - self.topBorder - (self.rowHeight * curRow))
-		slot:Show()
-		curCol = curCol + 1
-		if curCol > cols then
+		if slot.ClearAllPoints then
+			justinc = false
+			slot:ClearAllPoints()
+			slot:SetPoint("TOPLEFT", self.frame:GetName(), "TOPLEFT", self.leftBorder + self.colWidth * (curCol - 1), 0 - self.topBorder - (self.rowHeight * curRow))
+			slot:Show()
+			curCol = curCol + 1
+		end
+
+		maxCol = math.max(maxCol, curCol-1)
+		
+		if (curCol > cols or slot == "NEWLINE") and not justinc then
 			curCol, curRow, justinc = 1, curRow + 1, true
 		end
 	end
 	
 	if not justinc then curRow = curRow + 1 end
 	self.frame:SetHeight(curRow * self.rowHeight + self.bottomBorder + self.topBorder) 
-	self.frame:SetWidth(cols * self.colWidth + self.leftBorder + self.rightBorder)
+	self.frame:SetWidth(maxCol * self.colWidth + self.leftBorder + self.rightBorder)
 	
 	self.doOrganization = false
 end
