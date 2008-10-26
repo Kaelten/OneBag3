@@ -79,7 +79,7 @@ function OneBag3:OnInitialize()
 	
 	self.sidebar:Hide()
 	
-	--self:OpenConfig()
+	self:OpenConfig()
 	
 end
 
@@ -104,8 +104,8 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("MERCHANT_CLOSED", 		close)
 	self:RegisterEvent("TRADE_SHOW", 			open)
 	self:RegisterEvent("TRADE_CLOSED", 			close)
-	self:RegisterEvent("GUILDBANKFRAME_OPENED", 			open)
-	self:RegisterEvent("GUILDBANKFRAME_CLOSED", 			close)
+	self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
+	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
 	
 end
 

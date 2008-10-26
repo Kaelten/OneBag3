@@ -19,37 +19,18 @@ local configs = {}
 show = {
 	['*'] = true
 },
-appearance = {
-	cols = 10,
-	scale = 1,
-	alpha = 1,
-	glow = false,
-	rarity = true,
-},
+
+]]
+
+local function GetAppearanceOptions(addon)
+--[[
 behavior = {
 	strata = 2,
 	locked = false,
 	clamped = true,
 	bagbreak = false,
 },
-position = {
-	parent = "UIParent",
-	top = 500,
-	left = 300
-},]]
-
-local function GetAppearanceOptions(addon)
-	--[[
-	appearance = {
-		cols = 10,
-		scale = 1,
-		alpha = 1,
-		glow = false,
-		rarity = true,
-	},
-	]]
-	
-	
+]]
 	return {
 		type = "group", 
 		args = {
@@ -73,10 +54,22 @@ local function GetAppearanceOptions(addon)
 					addon:OrganizeFrame(true)
 				end	
 			},
+			clamped = {
+				order = 3,
+				type = "toggle",
+				name = "Clamp to Screen",
+				get = function(info)
+					return addon.db.profile.behavior.clamped
+				end,
+				set = function(info, value)
+					addon.db.profile.behavior.clamped = value
+					addon.frame:CustomizeFrame(addon.db.profile)
+				end
+			},
 			appearance = {
 				order = 10,
 				type = "header",
-				name = "Appearance Options"
+				name = "Appearance Options",
 			},
 			scale = {
 				order = 11,
@@ -108,7 +101,47 @@ local function GetAppearanceOptions(addon)
 					addon.frame:CustomizeFrame(addon.db.profile)
 				end,
 			},
-			
+			border = {
+				order = 20,
+				type = "header",
+				name = "Border Options",
+			},
+			glow = {
+				order = 21,
+				type = "toggle",
+				name = "Use Glow Borders",
+				get = function(info)
+					return addon.db.profile.appearance.glow
+				end,
+				set = function(info, value)
+					addon.db.profile.appearance.glow = value
+					addon:UpdateFrame()
+				end,
+			},
+			rarity = {
+				order = 22,
+				type = "toggle",
+				name = "Use Rarity Borders",
+				get = function(info)
+					return addon.db.profile.appearance.rarity
+				end,
+				set = function(info, value)
+					addon.db.profile.appearance.rarity = value
+					addon:UpdateFrame()
+				end,
+			},
+			white = {
+				order = 23,
+				type = "toggle",
+				name = "Color White Item",
+				get = function(info)
+					return addon.db.profile.appearance.white
+				end,
+				set = function(info, value)
+					addon.db.profile.appearance.white = value
+					addon:UpdateFrame()
+				end,
+			},
 		}
 	}
 

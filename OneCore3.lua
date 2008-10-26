@@ -65,6 +65,7 @@ local ModulePrototype = {
 				alpha = 1,
 				glow = false,
 				rarity = true,
+				white = false,
 			},
 			behavior = {
 				strata = 2,
@@ -104,33 +105,35 @@ function ModulePrototype:ColorBorder(slot)
 		
 		for k, v in ipairs(ITEM_QUALITY_COLORS) do
 			if hex == v.hex then
-				color = v
+				if k ~= 1 or self.db.profile.appearance.white then
+					color = v
+				end
 			end
 		end
-		
-		local texture = slot:GetNormalTexture()		
-		if self.db.profile.appearance.glow and color ~= plain then
-			texture:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
-	        texture:SetBlendMode("ADD")
-	        texture:SetAlpha(.8)
-	        texture:SetPoint("CENTER", slot, "CENTER", 0, 1)
-
-			slot.border:Hide()
-			slot.glowing = true
-		elseif slot.glowing then
-			texture:SetTexture("Interface\\Buttons\\UI-Quickslot2")
-			texture:SetBlendMode("BLEND")
-	        texture:SetPoint("CENTER", slot, "CENTER", 0, 0)
-			texture:SetAlpha(1)
-			texture:SetVertexColor(1, 1, 1)
-			
-			slot.border:Show()
-			slot.glowing = false
-		end
-		
-		local target = slot.glowing and texture or slot.border
-		target:SetVertexColor(color.r, color.g, color.b)
 	end
+	
+	local texture = slot:GetNormalTexture()		
+	if self.db.profile.appearance.glow and color ~= plain then
+		texture:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
+        texture:SetBlendMode("ADD")
+        texture:SetAlpha(.8)
+        texture:SetPoint("CENTER", slot, "CENTER", 0, 1)
+
+		slot.border:Hide()
+		slot.glowing = true
+	elseif slot.glowing then
+		texture:SetTexture("Interface\\Buttons\\UI-Quickslot2")
+		texture:SetBlendMode("BLEND")
+        texture:SetPoint("CENTER", slot, "CENTER", 0, 0)
+		texture:SetAlpha(1)
+		texture:SetVertexColor(1, 1, 1)
+		
+		slot.border:Show()
+		slot.glowing = false
+	end
+	
+	local target = slot.glowing and texture or slot.border
+	target:SetVertexColor(color.r, color.g, color.b)
 end
 
 -- OneCore!
