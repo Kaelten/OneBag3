@@ -15,13 +15,6 @@ local status = {}
 local configs = {}
 
 
---[[
-show = {
-	['*'] = true
-},
-
-]]
-
 local function GetAppearanceOptions(addon)
 	return {
 		type = "group", 
@@ -213,21 +206,14 @@ local function GetColorOptions(addon)
 	}
 end
 
-tables = GetColorOptions(addon)
-AceConfig:RegisterOptionsTable(MODNAME, tables)
 tables = GetAppearanceOptions(addon)
-AceConfig:RegisterOptionsTable(MODNAME .. '2', tables)
-
+AceConfig:RegisterOptionsTable(MODNAME, tables)
+AceConfigDialog:AddToBlizOptions(MODNAME, MODNAME..": Appearance & Layout", tables)
 configs = {
-	--[[{
-		value = MODNAME,
-		text = "Color Options",
-	},]]
 	{
-		value = MODNAME .. '2',
+		value = MODNAME,
 		text = "Appearance & Layout"
 	}
-
 }
 
 
