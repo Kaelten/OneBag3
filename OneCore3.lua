@@ -9,6 +9,10 @@ function FrameMetatable:CustomizeFrame(db)
 	
 	self:SetFrameStrata(self.handler.stratas[db.behavior.strata])
 	self:SetClampedToScreen(db.behavior.clamped)
+	
+	if self.sidebar then
+		self.sidebar:CustomizeFrame(db)
+	end
 end
 
 function FrameMetatable:SetSize(width, height)
@@ -72,6 +76,7 @@ local ModulePrototype = {
 				locked = false,
 				clamped = true,
 				bagbreak = false,
+				valign = 1,
 			},
 			position = {
 				parent = "UIParent",
@@ -83,9 +88,9 @@ local ModulePrototype = {
 }
 
 local plain = {r = .05, g = .05, b = .05}
-function ModulePrototype:ColorBorder(slot)
+function ModulePrototype:ColorBorder(slot, fcolor)
 	local bag = slot:GetParent()
-	local color = plain
+	local color = fcolor or plain
 	
 	if not slot.border then
 		-- Thanks to oglow for this method
@@ -100,7 +105,7 @@ function ModulePrototype:ColorBorder(slot)
 		slot.border = border
 	end
 	
-	if self.db.profile.appearance.rarity then
+	if self.db.profile.appearance.rarity and not fcolor then
 		local hex = (GetContainerItemLink(bag:GetID(), slot:GetID()) or ""):match("(|cff%x%x%x%x%x%x)") 
 		
 		for k, v in ipairs(ITEM_QUALITY_COLORS) do
@@ -135,6 +140,30 @@ function ModulePrototype:ColorBorder(slot)
 	local target = slot.glowing and texture or slot.border
 	target:SetVertexColor(color.r, color.g, color.b)
 end
+
+function ModulePrototype:HighlightBagSlots(bagid)
+	if not self.frame.bags[bagid] then
+		return
+	end
+	
+	local color = self.db.profile.colors.mouseover 
+	
+	for slotid = 1, self.frame.bags[bagid].size do
+		self:ColorBorder(self.frame.slots[('%s:%s'):format(bagid, slotid)], color)
+	end
+end
+
+function ModulePrototype:UnhighlightBagSlots(bagid)
+	if not self.frame.bags[bagid] then
+		return
+	end
+	
+	for slotid = 1, self.frame.bags[bagid].size do
+		self:ColorBorder(self.frame.slots[('%s:%s'):format(bagid, slotid)])
+	end
+end
+
+
 
 -- OneCore!
 OneCore3 = LibStub("AceAddon-3.0"):NewAddon("OneCore3", "AceEvent-3.0")

@@ -51,7 +51,7 @@ local function GetAppearanceOptions(addon)
 				order = 4,
 				type = "toggle",
 				name = "Bag Break",
-				desc = "Forces a rowbreak to happen at the end of each bag.",
+				desc = "Forces a row break to happen at the end of each bag.",
 				get = function(info)
 					return addon.db.profile.behavior.bagbreak
 				end,
@@ -64,9 +64,8 @@ local function GetAppearanceOptions(addon)
 				order = 5, 
 				type = "range",
 				name = "Number of Columns",
-				min = 1,
-				max = 30,
-				step = 1,
+				desc = "Sets the maximum number of columns to use",
+				min = 1, max = 30, step = 1,
 				get = function(info)
 					return addon.db.profile.appearance.cols
 				end,
@@ -90,7 +89,20 @@ local function GetAppearanceOptions(addon)
 					addon.frame:CustomizeFrame(addon.db.profile)
 				end	
 			},
-			
+			valign = {
+				order = 7,
+				type = 'select',
+				name = 'Vertical Alignment',
+				values = {'Top', 'Bottom'},
+				style = 'radio',
+				get = function(info)
+					return addon.db.profile.behavior.valign
+				end,
+				set = function(info, value)
+					addon.db.profile.behavior.valign = value
+					addon:OrganizeFrame(true)
+				end
+			},
 			appearance = {
 				order = 10,
 				type = "header",
@@ -240,5 +252,5 @@ function addon:OpenConfig()
 		frame:AddChild(select)
 	end
 	frame:Show()
-	AceConfigDialog:Open(MODNAME .. '2', select)
+	AceConfigDialog:Open(MODNAME, select)
 end

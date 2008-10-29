@@ -162,9 +162,9 @@ function OneBag3:GetBackbackButton(parent)
 	
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 	OBSideBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
---	OBSideBarBackpackButtonIconTexture:Show()
 	
 	button:SetScript("OnEnter", function()
+		self:HighlightBagSlots(0)
 		GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1.0, 1.0, 1.0)
 		local keyBinding = GetBindingKey("TOGGLEBACKPACK")
@@ -175,7 +175,16 @@ function OneBag3:GetBackbackButton(parent)
 		GameTooltip:Show()
 	end)
 	
-	button:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	button:SetScript("OnLeave", function()
+		if not this:GetChecked() then
+			self:UnhighlightBagSlots(0)
+			self.frame.bags[0].colorLocked = false
+		else
+			self.frame.bags[0].colorLocked = true
+		end
+		GameTooltip:Hide()
+	end)
+	
 	button:SetScript("OnReceiveDrag", function(event, btn) BackpackButton_OnClick(button, btn) end)
 	
 	return button
@@ -218,14 +227,23 @@ function OneBag3:GetButtonOrder()
 	
 	for _, bagid in pairs(self.bagIndexes) do
 		for slotid = 1, self.frame.bags[bagid].size do
-			tinsert(slots,  self.frame.slots[('%s:%s'):format(bagid, slotid)])
+			table.insert(slots,  self.frame.slots[('%s:%s'):format(bagid, slotid)])
 		end	
 		
 		if self.db.profile.behavior.bagbreak then
-			tinsert(slots, "NEWLINE")
+			table.insert(slots, "NEWLINE")
 		end
 	end
-
+	
+	if self.db.profile.behavior.valign == 2 and not self.db.profile.behavior.bagbreak then
+		local totalSlots, cols = #slots, self.db.profile.appearance.cols
+		local leftover = math.fmod(totalSlots, cols)
+		local spaces = leftover > 0 and cols - leftover or 0
+		for i=1, spaces do
+			table.insert(slots, 1, "BLANK")
+		end
+	end
+	
 	return slots
 end
 
@@ -276,7 +294,11 @@ function OneBag3:OrganizeFrame(force)
 			slot:Show()
 			curCol = curCol + 1
 		end
-
+		
+		if slot == "BLANK" then
+			curCol = curCol + 1
+		end
+		
 		maxCol = math.max(maxCol, curCol-1)
 		
 		if (curCol > cols or slot == "NEWLINE") and not justinc then
