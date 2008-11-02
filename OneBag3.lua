@@ -79,7 +79,7 @@ function OneBag3:OnInitialize()
 	
 	self.sidebar:Hide()
 	
---	self:OpenConfig()
+	self:OpenConfig()
 	
 end
 
@@ -175,8 +175,8 @@ function OneBag3:GetBackbackButton(parent)
 		GameTooltip:Show()
 	end)
 	
-	button:SetScript("OnLeave", function()
-		if not this:GetChecked() then
+	button:SetScript("OnLeave", function(button)
+		if not button:GetChecked() then
 			self:UnhighlightBagSlots(0)
 			self.frame.bags[0].colorLocked = false
 		else
@@ -195,6 +195,22 @@ function OneBag3:GetBagButton(bag, parent)
 	local button = CreateFrame("CheckButton", "OBSideBarBag"..bag.."Slot", parent, "BagSlotButtonTemplate")
 	
 	button:SetScale(1.27)
+	
+	self:SecureHookScript(button, "OnEnter", function(button)
+		self:HighlightBagSlots(button:GetID()-19)
+	end)
+	
+	button:SetScript("OnLeave", function(button)
+		if not button:GetChecked() then
+			self:UnhighlightBagSlots(button:GetID()-19)
+			self.frame.bags[button:GetID()-19].colorLocked = false
+		else
+			self.frame.bags[button:GetID()-19].colorLocked = true
+		end
+		GameTooltip:Hide()
+	end)
+	
+	button:SetScript("OnClick", function(button) end)
 	
 	return button
 end
@@ -225,7 +241,15 @@ end
 function OneBag3:GetButtonOrder()
 	slots = {}
 	
-	for _, bagid in pairs(self.bagIndexes) do
+	if self.db.profile.behavior.bagorder == 2 then
+		start, stop, step = #self.bagIndexes, 1, -1
+	else
+		start, stop, step = 1, #self.bagIndexes, 1
+	end
+
+	for i=start, stop, step do
+		bagid = self.bagIndexes[i]
+
 		for slotid = 1, self.frame.bags[bagid].size do
 			table.insert(slots,  self.frame.slots[('%s:%s'):format(bagid, slotid)])
 		end	

@@ -77,6 +77,7 @@ local ModulePrototype = {
 				clamped = true,
 				bagbreak = false,
 				valign = 1,
+				bagorder = 1,
 			},
 			position = {
 				parent = "UIParent",
@@ -184,8 +185,8 @@ function OneCore3:BuildFrame(basename, moneyType)
 	
 	-- Default Behaviors
 	tinsert(UISpecialFrames, frame:GetName())
-	frame:SetScript("OnDragStart", function()
-		if not this.handler.db.profile.behavior.locked then
+	frame:SetScript("OnDragStart", function(self)
+		if not self.handler.db.profile.behavior.locked then
             frame:StartMoving()
             frame.isMoving = true
             
@@ -196,14 +197,14 @@ function OneCore3:BuildFrame(basename, moneyType)
 	end)
 	
 	frame:SetScript("OnDragStop", function()
-		frame:StopMovingOrSizing()
+		frame:StopMovingOrSizing(self)
         if frame.isMoving then
             frame.handler.db.profile.position = frame:GetPosition()
             for _, slot in pairs(frame.slots) do
 				slot:EnableMouse(true)
 			end
         end
-        this.isMoving = false
+        self.isMoving = false
 	end)
 	
 	local sidebarButton = CreateFrame('CheckButton', nil, frame)
