@@ -245,7 +245,7 @@ end
 
 tables = GetAppearanceOptions(addon)
 AceConfig:RegisterOptionsTable(MODNAME, tables)
-AceConfigDialog:AddToBlizOptions(MODNAME, MODNAME..": Appearance & Layout", tables)
+AceConfigDialog:AddToBlizOptions(MODNAME, MODNAME..": Appearance & Layout")
 configs = {
 	{
 		value = MODNAME,
