@@ -7,6 +7,7 @@ function OneBag3:OnInitialize()
 	self.db = AceDB3:New("OneBagDB")
 	self.db:RegisterDefaults(self.defaults)
 	
+	self.displayName = "OneBag3"
 	self.core = OneCore3
 	
 	self.bagIndexes = {0, 1, 2, 3, 4}
@@ -79,6 +80,7 @@ function OneBag3:OnInitialize()
 	
 	self.sidebar:Hide()
 	
+	self:InitializeConfiguration()
 	--self:OpenConfig()
 	
 end

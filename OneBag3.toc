@@ -28,5 +28,6 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 localizations\locals.xml
 
 OneCore3.lua
+OneConfig3.lua
+
 OneBag3.lua
-Config.lua
