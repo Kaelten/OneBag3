@@ -16,7 +16,7 @@ function FrameMetatable:CustomizeFrame(db)
 	
 	if self.slots then
 		for _, slot in pairs(self.slots) do
-			slot:SetFrameStrata(self.handler.stratas[db.behavior.strata+1])
+			slot:SetFrameStrata(self.handler.stratas[db.behavior.strata])
 		end
 	end
 end
