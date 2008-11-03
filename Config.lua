@@ -133,7 +133,7 @@ local function GetAppearanceOptions(addon)
 						name = "UI Scale",
 						min = 0.5,
 						max = 3,
-						step = 0.1,
+						step = 0.05,
 						get = function(info)
 							return addon.db.profile.appearance.scale
 						end,
