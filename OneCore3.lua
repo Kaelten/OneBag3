@@ -13,6 +13,12 @@ function FrameMetatable:CustomizeFrame(db)
 	if self.sidebar then
 		self.sidebar:CustomizeFrame(db)
 	end
+	
+	if self.slots then
+		for _, slot in pairs(self.slots) do
+			slot:SetFrameStrata(self.handler.stratas[db.behavior.strata+1])
+		end
+	end
 end
 
 function FrameMetatable:SetSize(width, height)

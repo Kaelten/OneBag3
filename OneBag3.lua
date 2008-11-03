@@ -292,6 +292,7 @@ function OneBag3:BuildFrame()
 			slotkey = ('%s:%s'):format(bag, slot)
 			if not self.frame.slots[slotkey] then
 				self.frame.slots[slotkey] = self:GetButton(self.frame.bags[bag], slot)
+				self.frame.slots[slotkey]:SetFrameStrata(self.stratas[self.db.profile.behavior.strata+1])
 				self.doOrganization = true
 			end
 		end
