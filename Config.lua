@@ -245,7 +245,7 @@ end
 
 tables = GetAppearanceOptions(addon)
 AceConfig:RegisterOptionsTable(MODNAME, tables)
-AceConfigDialog:AddToBlizOptions(MODNAME, MODNAME..": Appearance & Layout")
+local blizid = AceConfigDialog:AddToBlizOptions(MODNAME)
 configs = {
 	{
 		value = MODNAME,
@@ -264,18 +264,5 @@ local function OnClick(widget, event, value)
 end
 
 function addon:OpenConfig()
-	if not frame then
-		frame = AceGUI:Create("Frame")
-		frame:ReleaseChildren()
-		frame:SetTitle("OneBag3")
-		frame:SetLayout("FILL")
-		frame:SetCallback("OnClose", frameOnClose)
-
-		select = AceGUI:Create("TreeGroup")
-		select:SetTree(configs)
-		select:SetCallback("OnClick", OnClick)
-		frame:AddChild(select)
-	end
-	frame:Show()
-	AceConfigDialog:Open(MODNAME, select)
+	InterfaceOptionsFrame_OpenToCategory(blizid)
 end
