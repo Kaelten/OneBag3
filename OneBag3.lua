@@ -81,7 +81,7 @@ function OneBag3:OnInitialize()
 	self.sidebar:Hide()
 	
 	self:InitializeConfiguration()
-	self:OpenConfig()
+	--self:OpenConfig()
 	
 end
 
@@ -229,7 +229,9 @@ end
 
 function OneBag3:GetButton(parent, id)
 	local frame = CreateFrame("Button", parent:GetName().."Item"..id, parent, "ContainerFrameItemButtonTemplate")
+	
 	frame:SetID(id)
+	frame:SetFrameLevel(parent:GetParent():GetFrameLevel()+20)
 	
 	frame.meta = {
 		name = '',
@@ -318,6 +320,7 @@ function OneBag3:OrganizeFrame(force)
 			justinc = false
 			slot:ClearAllPoints()
 			slot:SetPoint("TOPLEFT", self.frame:GetName(), "TOPLEFT", self.leftBorder + self.colWidth * (curCol - 1), 0 - self.topBorder - (self.rowHeight * curRow))
+			slot:SetFrameLevel(self.frame:GetFrameLevel()+20)
 			slot:Show()
 			curCol = curCol + 1
 		end

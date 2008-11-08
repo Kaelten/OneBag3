@@ -284,7 +284,7 @@ function OneCore3:BuildBaseFrame(basename)
         edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
         insets = {left = 5, right = 5, top = 5, bottom = 5},
     })
-	
+		
 	return frame
 end
 
