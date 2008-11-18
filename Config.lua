@@ -1,6 +1,5 @@
 
 local MODNAME           = "OneBag3" 
-
 local addon             = OneBag3
  
 --local L                 = LibStub("AceLocale-3.0"):GetLocale(MODNAME) 
