@@ -1,3 +1,10 @@
+
+-- Quiver + Ammo
+local BAGTYPE_QUIVER = 0x0001 + 0x0002 
+local BAGTYPE_SOUL = 0x004
+-- Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining
+local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400 
+
 local FrameMetatable = {}
 
 function FrameMetatable:CustomizeFrame(db)
@@ -112,14 +119,25 @@ function ModulePrototype:ColorBorder(slot, fcolor)
 		slot.border = border
 	end
 	
-	if self.db.profile.appearance.rarity and not fcolor then
-		local hex = (GetContainerItemLink(bag:GetID(), slot:GetID()) or ""):match("(|cff%x%x%x%x%x%x)") 
+	local bcolor = nil
+	if not fcolor and bag.type then
+		if bit.band(bag.type, BAGTYPE_QUIVER) > 0 then
+			bcolor = self.db.profile.colors.ammo
+		elseif bit.band(bag.type, BAGTYPE_SOUL) > 0 then
+			bcolor = self.db.profile.colors.soul
+		elseif bit.band(bag.type, BAGTYPE_PROFESSION) > 0 then
+			bcolor = self.db.profile.colors.profession
+		end
 		
-		for k, v in ipairs(ITEM_QUALITY_COLORS) do
-			if hex == v.hex then
-				if k ~= 1 or self.db.profile.appearance.white then
-					color = v
-				end
+		if bcolor then color = bcolor end
+	end
+	
+	if self.db.profile.appearance.rarity and not fcolor and not bcolor then
+		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
+		if link then
+			local rarity = select(3, GetItemInfo(link))
+			if rarity ~= 1 or self.db.profile.appearance.white then
+				color = ITEM_QUALITY_COLORS[rarity]
 			end
 		end
 	end

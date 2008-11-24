@@ -81,7 +81,7 @@ function OneBag3:OnInitialize()
 	self.sidebar:Hide()
 	
 	self:InitializeConfiguration()
-	--self:OpenConfig()
+	self:OpenConfig()
 	
 end
 
@@ -212,7 +212,13 @@ function OneBag3:GetBagButton(bag, parent)
 		GameTooltip:Hide()
 	end)
 	
-	button:SetScript("OnClick", function(button) end)
+	button:SetScript("OnClick", function(button) 
+		local haditem = PutItemInBag(button:GetID())
+
+		if haditem then
+			button:SetChecked(not button:GetChecked())
+		end 
+	end)
 	
 	return button
 end
@@ -278,6 +284,7 @@ end
 function OneBag3:BuildFrame()
 	for _, bag in pairs(self.bagIndexes) do
 		local size = GetContainerNumSlots(bag)
+		local bagType = select(2, GetContainerNumFreeSlots(bag))
 		
 		if not self.frame.bags then
 			self.frame.bags = {}
@@ -286,6 +293,8 @@ function OneBag3:BuildFrame()
 		if not self.frame.bags[bag] then
 			self.frame.bags[bag] = self:GetBag(self.frame, bag)
 		end		
+		
+		self.frame.bags[bag].type = bagType
 		
 		if self.frame.bags[bag].size ~= size then
 			self.frame.bags[bag].size = size
@@ -300,7 +309,6 @@ function OneBag3:BuildFrame()
 				self.doOrganization = true
 			end
 		end
-		
 	end
 end
 
