@@ -94,13 +94,24 @@ function OneBag3:OnEnable()
 	self:RawHook("CloseBackpack", "CloseBag", true)
 	self:RawHook("ToggleBackpack", "ToggleBag", true)
 	
-	local open = function() self:OpenBag() end
-	local close = function() self:CloseBag() end
+	local open = function() 
+		self.wasOpened = self.isOpened
+		if not self.isOpened then
+			self:OpenBag() 
+		end
+	end
+	
+	local close = function(event)
+		if (event == "MAIL_CLOSED" and not self.isReopened) or not self.wasOpened then
+			self:CloseBag() 
+		end
+	end
 	
 	self:RegisterEvent("AUCTION_HOUSE_SHOW", 	open)
 	self:RegisterEvent("AUCTION_HOUSE_CLOSED", 	close)
 	self:RegisterEvent("BANKFRAME_OPENED", 		open)
 	self:RegisterEvent("BANKFRAME_CLOSED", 		close)
+	self:RegisterEvent("MAIL_SHOW",				open)
 	self:RegisterEvent("MAIL_CLOSED", 			close)
 	self:RegisterEvent("MERCHANT_SHOW", 		open)
 	self:RegisterEvent("MERCHANT_CLOSED", 		close)
@@ -130,9 +141,9 @@ function OneBag3:ToggleBag(bag)
 	end
 	
 	if self.frame:IsVisible() then
-		self.frame:Hide()
+		self:CloseBag()
 	else
-		self.frame:Show()
+		self:OpenBag()
 	end
 end
 
@@ -142,6 +153,8 @@ function OneBag3:OpenBag(bag)
 	end
 	
 	self.frame:Show()
+	self.isReopened = self.isOpened
+	self.isOpened = true
 end
 
 
@@ -151,6 +164,7 @@ function OneBag3:CloseBag(bag)
 	end
 	
 	self.frame:Hide()
+	self.isOpened = false
 end
 
 function OneBag3:GetBackbackButton(parent)
@@ -218,6 +232,10 @@ function OneBag3:GetBagButton(bag, parent)
 		if haditem then
 			button:SetChecked(not button:GetChecked())
 		end 
+	end)
+	
+	button:SetScript("OnReceiveDrag", function(button) 
+		PutItemInBag(button:GetID())
 	end)
 	
 	return button
