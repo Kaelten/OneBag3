@@ -81,7 +81,7 @@ function OneBag3:OnInitialize()
 	self.sidebar:Hide()
 	
 	self:InitializeConfiguration()
-	self:OpenConfig()
+--	self:OpenConfig()
 	
 end
 

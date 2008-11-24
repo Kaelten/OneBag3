@@ -444,5 +444,5 @@ end
 
 function ModulePrototype:OpenConfig()
 	InterfaceOptionsFrame_OpenToCategory(self.configs.colors)
---	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
+	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
 end
