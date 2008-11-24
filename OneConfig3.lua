@@ -436,12 +436,6 @@ function ModulePrototype:InitializeConfiguration()
 	self.configs.colors = AceConfigDialog:AddToBlizOptions(self.displayName, "Color Options", self.displayName, 'colors')
 end
 
---[[function Mapster:RegisterModuleOptions(name, optionTbl, displayName)
-	moduleOptions[name] = optionTbl
-	self.optionsFrames[name] = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Mapster", displayName, "Mapster", name)
-end
-]]
-
 function ModulePrototype:OpenConfig()
 	InterfaceOptionsFrame_OpenToCategory(self.configs.colors)
 	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
