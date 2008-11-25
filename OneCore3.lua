@@ -9,17 +9,17 @@ local BagMetatable = {}
 
 function BagMetatable:IsAmmoBag()
 	if not self.type or self.type == 0 then return false end
-	return bit.band(self.type, BAGTYPE_QUIVER)
+	return bit.band(self.type, BAGTYPE_QUIVER) > 0
 end
 
 function BagMetatable:IsSoulBag()
 	if not self.type or self.type == 0 then return false end
-	return bit.band(self.type, BAGTYPE_SOUL)
+	return bit.band(self.type, BAGTYPE_SOUL) > 0
 end
 
 function BagMetatable:IsProfessionBag()
 	if not self.type or self.type == 0 then return false end
-	return bit.band(self.type, BAGTYPE_PROFESSION)
+	return bit.band(self.type, BAGTYPE_PROFESSION) > 0
 end
 
 local SlotMetatable = {}
