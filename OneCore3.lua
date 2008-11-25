@@ -5,6 +5,35 @@ local BAGTYPE_SOUL = 0x004
 -- Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining
 local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400 
 
+local BagMetatable = {}
+
+function BagMetatable:IsAmmoBag()
+	if not self.type or self.type == 0 then return false end
+	return bit.band(self.type, BAGTYPE_QUIVER)
+end
+
+function BagMetatable:IsSoulBag()
+	if not self.type or self.type == 0 then return false end
+	return bit.band(self.type, BAGTYPE_SOUL)
+end
+
+function BagMetatable:IsProfessionBag()
+	if not self.type or self.type == 0 then return false end
+	return bit.band(self.type, BAGTYPE_PROFESSION)
+end
+
+local SlotMetatable = {}
+
+function SlotMetatable:ShouldShow()
+	local bag = self:GetParent()
+	
+	if bag:IsAmmoBag() and not self.handler.db.profile.show.ammo then return false end
+	if bag:IsSoulBag() and not self.handler.db.profile.show.soul then return false end
+	if bag:IsProfessionBag() and not self.handler.db.profile.show.profession then return false end
+	
+	return self.handler.db.profile.show[bag:GetID()]
+end
+
 local FrameMetatable = {}
 
 function FrameMetatable:CustomizeFrame(db)
@@ -188,6 +217,38 @@ function ModulePrototype:UnhighlightBagSlots(bagid)
 	end
 end
 
+function ModulePrototype:GetBag(parent, id)
+	local bag = CreateFrame("Frame", parent:GetName().."Bag"..id, parent)
+	bag:SetID(id)
+	
+	bag.meta = {}
+	bag.slots = {}
+	bag.handler = self
+	
+	for k, v in pairs(BagMetatable) do
+		bag[k] = v
+	end
+	
+	return bag
+end
+
+function ModulePrototype:GetButton(parent, id)
+	local button = CreateFrame("Button", parent:GetName().."Item"..id, parent, "ContainerFrameItemButtonTemplate")
+	
+	button:SetID(id)
+	button:SetFrameLevel(parent:GetParent():GetFrameLevel()+20)
+	
+	button.meta = {}
+	button.handler = self
+	
+	parent.slots[id] = button
+	
+	for k, v in pairs(SlotMetatable) do
+		button[k] = v
+	end
+	
+	return button
+end
 
 
 -- OneCore!

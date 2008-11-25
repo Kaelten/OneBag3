@@ -22,3 +22,6 @@ L["Item Centric"] = true
 L["General"] = true
 L["Glow Borders are a little brighter and 'shinier' than the default ones."] = true
 L["Bag Centric"] = true
+
+L["Bag Visibility"] = true
+L["Type Based Filters"] = true

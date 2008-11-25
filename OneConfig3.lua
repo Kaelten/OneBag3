@@ -289,7 +289,7 @@ function ModulePrototype:InitializeConfiguration()
 					type = "group",
 					name = L["Color Options"],
 					args = {
-						genera = {
+						general = {
 							type = "group",
 							order = 1, 
 							inline = true,
@@ -423,20 +423,83 @@ function ModulePrototype:InitializeConfiguration()
 							}
 						},
 					}
-				}
+				},
+				showbags = {
+					type = "group",
+					name = L["Bag Visibility"],
+					args = {
+						description = {
+							type = 'description',
+							name = 'These options allow you to stop certain bags from displaying.',
+							order = 1
+						},
+						type = {
+							type = "group",
+							name = L["Type Based Filters"],
+							order = 1,
+							inline = true,
+							args = {
+								ammo = {
+									order = 15,
+									type = "toggle",
+									name = "Ammo Bags & Quivers",
+									desc = "Toggles the display of ammo bags and quivers.",
+									get = function(info)
+										return self.db.profile.show.ammo
+									end,
+									set = function(info, value)
+										self.db.profile.show.ammo = value
+										self:OrganizeFrame(true)
+									end
+								},
+								soul = {
+									order = 10,
+									type = "toggle",
+									name = "Soul Bags",
+									desc = "Toggles the display of soul bags.",
+									get = function(info)
+										return self.db.profile.show.soul
+									end,
+									set = function(info, value)
+										self.db.profile.show.soul = value
+										self:OrganizeFrame(true)
+									end
+								},
+								profession = {
+									order = 5,
+									type = "toggle",
+									name = "Profession Bags",
+									desc = "Toggles the display of profession bags.",
+									get = function(info)
+										return self.db.profile.show.profession
+									end,
+									set = function(info, value)
+										self.db.profile.show.profession = value
+										self:OrganizeFrame(true)
+									end
+								},
+							}
+						}
+					},
+				},
 			}
 		}
 	end
 	
 	baseconfig = GetBaseConfig()
 	
+	if self.LoadCustomConfig then
+		self:LoadCustomConfig(baseconfig)
+	end
+	
 	AceConfig:RegisterOptionsTable(self.displayName, baseconfig)
 	self.configs.main = AceConfigDialog:AddToBlizOptions(self.displayName, nil, nil, 'general')
 	self.configs.frame = AceConfigDialog:AddToBlizOptions(self.displayName, "Frame Options", self.displayName, 'frame')
 	self.configs.colors = AceConfigDialog:AddToBlizOptions(self.displayName, "Color Options", self.displayName, 'colors')
+	self.configs.showbags = AceConfigDialog:AddToBlizOptions(self.displayName, "Bag Visibility", self.displayName, 'showbags')
 end
 
 function ModulePrototype:OpenConfig()
-	InterfaceOptionsFrame_OpenToCategory(self.configs.colors)
-	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
+	InterfaceOptionsFrame_OpenToCategory(self.configs.showbags)
+--	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
 end

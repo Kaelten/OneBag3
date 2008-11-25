@@ -81,7 +81,7 @@ function OneBag3:OnInitialize()
 	self.sidebar:Hide()
 	
 	self:InitializeConfiguration()
---	self:OpenConfig()
+	self:OpenConfig()
 	
 end
 
@@ -120,6 +120,43 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
 	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
 	
+end
+
+-- Custom Configuration
+function OneBag3:LoadCustomConfig(baseconfig)
+	local bagvisibility = {
+		type = "group",
+		name = "Specific Bag Filters",
+		order = 2,
+		inline = true,
+		args = {}
+	}
+
+	local names = {
+		[0] = 'Backpack',
+		[1] = 'First Bag',
+		[2] = 'Second Bag',
+		[3] = 'Third Bag',
+		[4] = 'Fourth Bag',
+	}
+	
+	for id, text in pairs(names) do
+		bagvisibility.args[tostring(id)] = {
+			order = 5 * id + 5,
+			type = "toggle",
+			name = text,
+			desc = ("Toggles the display of your %s."):format(text),
+			get = function(info)
+				return self.db.profile.show[id]
+			end,
+			set = function(info, value)
+				self.db.profile.show[id] = value
+				self:OrganizeFrame(true)
+			end
+		}
+	end
+	
+	baseconfig.args.showbags.args.bag = bagvisibility
 end
 
 -- Hooks handlers
@@ -241,31 +278,6 @@ function OneBag3:GetBagButton(bag, parent)
 	return button
 end
 
-function OneBag3:GetBag(parent, id)
-	local frame = CreateFrame("Frame", parent:GetName().."Bag"..id, parent)
-	frame:SetID(id)
-	
-	frame.meta = {}
-	frame.slots = {}
-	
-	return frame
-end
-
-function OneBag3:GetButton(parent, id)
-	local frame = CreateFrame("Button", parent:GetName().."Item"..id, parent, "ContainerFrameItemButtonTemplate")
-	
-	frame:SetID(id)
-	frame:SetFrameLevel(parent:GetParent():GetFrameLevel()+20)
-	
-	frame.meta = {
-		name = '',
-	}
-	
-	parent.slots[id] = frame
-	
-	return frame
-end
-
 function OneBag3:GetButtonOrder()
 	slots = {}
 	
@@ -342,23 +354,25 @@ function OneBag3:OrganizeFrame(force)
 	end
 	
 	for slotkey, slot in pairs(self:GetButtonOrder()) do
-		if slot.ClearAllPoints then
-			justinc = false
-			slot:ClearAllPoints()
-			slot:SetPoint("TOPLEFT", self.frame:GetName(), "TOPLEFT", self.leftBorder + self.colWidth * (curCol - 1), 0 - self.topBorder - (self.rowHeight * curRow))
-			slot:SetFrameLevel(self.frame:GetFrameLevel()+20)
-			slot:Show()
-			curCol = curCol + 1
-		end
+		if slot:ShouldShow() then
+			if slot.ClearAllPoints then
+				justinc = false
+				slot:ClearAllPoints()
+				slot:SetPoint("TOPLEFT", self.frame:GetName(), "TOPLEFT", self.leftBorder + self.colWidth * (curCol - 1), 0 - self.topBorder - (self.rowHeight * curRow))
+				slot:SetFrameLevel(self.frame:GetFrameLevel()+20)
+				slot:Show()
+				curCol = curCol + 1
+			end
 		
-		if slot == "BLANK" then
-			curCol = curCol + 1
-		end
+			if slot == "BLANK" then
+				curCol = curCol + 1
+			end
 		
-		maxCol = math.max(maxCol, curCol-1)
+			maxCol = math.max(maxCol, curCol-1)
 		
-		if (curCol > cols or slot == "NEWLINE") and not justinc then
-			curCol, curRow, justinc = 1, curRow + 1, true
+			if (curCol > cols or slot == "NEWLINE") and not justinc then
+				curCol, curRow, justinc = 1, curRow + 1, true
+			end
 		end
 	end
 	
