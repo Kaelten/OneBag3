@@ -343,7 +343,7 @@ function OneBag3:BuildFrame()
 end
 
 function OneBag3:OrganizeFrame(force)
-	if not self.doOrganization and not force then
+	if (not self.doOrganization and not force) or not self.frame.slots then
 		return 
 	end
 	
