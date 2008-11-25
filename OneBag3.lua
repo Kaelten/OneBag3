@@ -354,7 +354,7 @@ function OneBag3:OrganizeFrame(force)
 	end
 	
 	for slotkey, slot in pairs(self:GetButtonOrder()) do
-		if slot:ShouldShow() then
+		if type(slot) == 'string' or slot:ShouldShow() then
 			if slot.ClearAllPoints then
 				justinc = false
 				slot:ClearAllPoints()
