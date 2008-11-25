@@ -163,7 +163,7 @@ function ModulePrototype:InitializeConfiguration()
 									end,
 									set = function(info, value)
 										self.db.profile.behavior.clamped = value
-										addon.frame:CustomizeFrame(self.db.profile)
+										self.frame:CustomizeFrame(self.db.profile)
 									end
 								},
 								strata = {
@@ -178,7 +178,7 @@ function ModulePrototype:InitializeConfiguration()
 									end,
 									set = function(info, value)
 										self.db.profile.behavior.strata = value
-										addon.frame:CustomizeFrame(self.db.profile)
+										self.frame:CustomizeFrame(self.db.profile)
 									end	
 								},
 								alpha = {
@@ -193,7 +193,7 @@ function ModulePrototype:InitializeConfiguration()
 									end,
 									set = function(info, alpha)
 										self.db.profile.appearance.alpha = alpha
-										addon.frame:CustomizeFrame(self.db.profile)
+										self.frame:CustomizeFrame(self.db.profile)
 									end,
 								},
 								scale = {
@@ -208,7 +208,7 @@ function ModulePrototype:InitializeConfiguration()
 									end,
 									set = function(info, scale)
 										self.db.profile.appearance.scale = scale
-										addon.frame:CustomizeFrame(self.db.profile)
+										self.frame:CustomizeFrame(self.db.profile)
 									end,
 								},
 								
