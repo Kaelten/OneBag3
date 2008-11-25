@@ -150,11 +150,11 @@ function ModulePrototype:ColorBorder(slot, fcolor)
 	
 	local bcolor = nil
 	if not fcolor and bag.type then
-		if bit.band(bag.type, BAGTYPE_QUIVER) > 0 then
+		if bag:IsAmmoBag() then
 			bcolor = self.db.profile.colors.ammo
-		elseif bit.band(bag.type, BAGTYPE_SOUL) > 0 then
+		elseif bag:IsSoulBag() then
 			bcolor = self.db.profile.colors.soul
-		elseif bit.band(bag.type, BAGTYPE_PROFESSION) > 0 then
+		elseif bag:IsProfessionBag() then
 			bcolor = self.db.profile.colors.profession
 		end
 		

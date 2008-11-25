@@ -501,5 +501,5 @@ end
 
 function ModulePrototype:OpenConfig()
 	InterfaceOptionsFrame_OpenToCategory(self.configs.showbags)
---	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
+	InterfaceOptionsFrame_OpenToCategory(self.configs.main)
 end
