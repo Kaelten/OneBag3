@@ -161,7 +161,7 @@ end
 -- Hooks handlers
 function OneBag3:IsBagOpen(bag)
 	if type(bag) == "number" and (bag < 0 or bag > 4) then
-		return self.hooks.IsBagOpen(bag)
+		return
 	end
 	
 	return self.isOpened and bag or nil
