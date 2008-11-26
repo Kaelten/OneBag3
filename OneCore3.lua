@@ -1,9 +1,9 @@
 
--- Quiver + Ammo
+-- BAGTYPE_QUIVER = Quiver + Ammo
 local BAGTYPE_QUIVER = 0x0001 + 0x0002 
--- Soul Bags
+-- BAGTYPE_SOUL = Soul Bags
 local BAGTYPE_SOUL = 0x004
--- Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining
+-- BAGTYPE_PROFESSION = Leather + Inscription + Herb + Enchanting + Engineering + Gem + Mining
 local BAGTYPE_PROFESSION = 0x0008 + 0x0010 + 0x0020 + 0x0040 + 0x0080 + 0x0200 + 0x0400 
 
 local BagMetatable = {}
