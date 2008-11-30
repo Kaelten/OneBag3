@@ -28,9 +28,17 @@ local SlotMetatable = {}
 function SlotMetatable:ShouldShow()
 	local bag = self:GetParent()
 	
-	if bag:IsAmmoBag() and not self.handler.db.profile.show.ammo then return false end
-	if bag:IsSoulBag() and not self.handler.db.profile.show.soul then return false end
-	if bag:IsProfessionBag() and not self.handler.db.profile.show.profession then return false end
+	if bag:IsAmmoBag() and not self.handler.db.profile.show.ammo then 
+		return false 
+	end
+	
+	if bag:IsSoulBag() and not self.handler.db.profile.show.soul then 
+		return false 
+	end
+	
+	if bag:IsProfessionBag() and not self.handler.db.profile.show.profession then 
+		return false 
+	end
 	
 	return self.handler.db.profile.show[bag:GetID()]
 end
@@ -131,6 +139,7 @@ local ModulePrototype = {
 	},   
 }
 
+local colorCache = {}
 local plain = {r = .05, g = .05, b = .05}
 function ModulePrototype:ColorBorder(slot, fcolor)
 	local bag = slot:GetParent()
@@ -166,8 +175,14 @@ function ModulePrototype:ColorBorder(slot, fcolor)
 		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
 		if link then
 			local rarity = select(3, GetItemInfo(link))
-			if rarity ~= 1 or self.db.profile.appearance.white then
-				color = ITEM_QUALITY_COLORS[rarity]
+			if rarity > 1 or self.db.profile.appearance.lowlevel then
+				-- going with this method as it should never produce a point where I don't have a color to work with.
+				color = colorCache[rarity]
+				if not color then
+					local r, g, b, hex = GetItemQualityColor(rarity)
+					color = {r=r, g=g, b=b}
+					colorCache[rarity] = color --caching to prevent me from generating dozens of tables per pass
+				end
 			end
 		end
 	end

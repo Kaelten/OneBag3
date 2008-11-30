@@ -357,16 +357,16 @@ function ModulePrototype:InitializeConfiguration()
 										self:UpdateFrame()
 									end,
 								},
-								white = {
+								lowlevel = {
 									order = 15,
 									type = "toggle",
-									name = "Color White Items",
-									desc = "Toggles if you want to color white item's borders as well.",
+									name = "Color Low Level Items",
+									desc = "Toggles if you want to color white and grey item's borders as well.",
 									get = function(info)
-										return self.db.profile.appearance.white
+										return self.db.profile.appearance.lowlevel
 									end,
 									set = function(info, value)
-										self.db.profile.appearance.white = value
+										self.db.profile.appearance.lowlevel = value
 										self:UpdateFrame()
 									end,
 								},
