@@ -30,4 +30,6 @@ localizations\locals.xml
 OneCore3.lua
 OneConfig3.lua
 
+plugins\sorting\simple.lua
+
 OneBag3.lua

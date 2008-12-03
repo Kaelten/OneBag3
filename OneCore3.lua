@@ -135,6 +135,7 @@ local ModulePrototype = {
 				top = 500,
 				left = 300
 			},
+			plugins = {},
 		},
 	},   
 }
@@ -404,7 +405,8 @@ end
 
 
 -- OneCore!
-OneCore3 = LibStub("AceAddon-3.0"):NewAddon("OneCore3", "AceEvent-3.0")
+local AceAddon = LibStub("AceAddon-3.0")
+OneCore3 = AceAddon:NewAddon("OneCore3", "AceEvent-3.0")
 OneCore3:SetDefaultModulePrototype(ModulePrototype)
 OneCore3:SetDefaultModuleLibraries("AceEvent-3.0", "AceHook-3.0", "AceConsole-3.0")
 
@@ -570,4 +572,94 @@ function OneCore3:BuildEditBox(name, parent)
 	end)
 	
 	return editbox
+end
+
+-- Plugin Harness
+local PluginMetatable = { 
+	__index = {
+		name = 'Unknown',
+		desc = 'This plugin may be able to do all sorts of impossible things! ... Or Not!',
+	}
+}
+
+local lastUsedPluginKey = 0x0000
+function OneCore3:NewPluginType(typeName, defaultPlugin)
+	if not self.plugins then
+		self.plugins = {}
+		self.defaultPlugins = {}
+		self.pluginTypeNames = {}	
+	end
+	
+	local pluginTypeKey = lastUsedPluginKey + 0x0100
+	lastUsedPluginKey = pluginTypeKey
+	
+	if not self.plugins[pluginTypeKey] then
+		self.plugins[pluginTypeKey] = {}
+	end
+	
+	self.defaultPlugins[pluginTypeKey] = defaultPlugin
+	self.pluginTypeNames[pluginTypeKey] = typeName
+	self[typeName] = pluginTypeKey
+		
+	ModulePrototype['Get'..typeName] = function(self, name) 
+		return self:GetPlugin(pluginTypeKey, name) 
+	end
+
+end
+
+OneCore3:NewPluginType('SortPlugin', 'simple')
+
+-- Styled after NewModule from AceAddon.
+local function IsModuleTrue(self) return true end
+function OneCore3:NewPlugin(pluginType, name, ...)
+	if not self.plugins[pluginType] then
+		error("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'pluginType' - Invalid value.", 2)
+	end
+	
+	if type(name) ~= "string" then 
+		error(("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'name' - string expected got '%s'."):format(type(name)), 2) 
+	end
+	
+	if self.plugins[pluginType][name] then
+		error(("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'name' - Plugin '%s' already exists."):format(name), 2)
+	end
+	
+	local plugin = AceAddon:NewAddon(string.format("%s_%s_%s", self.name or tostring(self), self.pluginTypeNames[pluginType], name))
+	
+	plugin.IsModule = IsModuleTrue
+	plugin:SetEnabledState(false)
+	plugin.moduleName = name
+
+	AceAddon:EmbedLibraries(plugin, ...)
+
+	if type(prototype) == "table" then
+		local mt = getmetatable(plugin)
+		mt.__index = PluginMetatable
+		setmetatable(plugin, mt)  -- More of a Base class type feel.
+	end
+	
+	self.plugins[pluginType][name] = plugin
+	return plugin
+end
+
+function ModulePrototype:GetPlugin(pluginType, name)
+	if not self.core.plugins[pluginType] then
+		error("Usage: GetPlugin(pluginType, [name]): 'pluginType' - valid pluginType constant expected.", 2)
+	end
+	
+	name = name or self.db.profile.plugins[pluginType]
+
+	local plugin = self.core.plugins[pluginType][name]
+	if not plugin then
+		name = self.core.defaultPlugins[pluginType]
+		plugin = self.core.plugins[pluginType][name]
+		
+		if not plugin then
+			error(("Usage: GetPlugin(pluginType, [name]): the default plugin for type %s does not exist."):format(self.core.pluginTypeNames[pluginType]), 2)
+		end
+		
+		self.db.profile.plugins[pluginType] = name
+	end
+	
+	return plugin
 end
