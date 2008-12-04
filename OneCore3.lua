@@ -403,6 +403,9 @@ function ModulePrototype:UpdateFrame()
 	end
 end
 
+function ModulePrototype:GetButtonOrder()
+	return self.activePlugins[OneCore3.SortPlugin]:GetButtonOrder()
+end
 
 -- OneCore!
 local AceAddon = LibStub("AceAddon-3.0")
@@ -576,18 +579,25 @@ end
 
 -- Plugin Harness
 local PluginMetatable = { 
-	__index = {
-		name = 'Unknown',
-		desc = 'This plugin may be able to do all sorts of impossible things! ... Or Not!',
-	}
+	displayName = 'Unknown',
+	description = 'This plugin may be able to do all sorts of impossible things! ... Or Not!',
 }
 
+function PluginMetatable:GetDBNamespace(db, namespace, defaults)
+	if db.children and db.children[namespace] then
+		return db.children[namespace]
+	end
+	
+	return db:RegisterNamespace('SimpleSortDB', defaults)
+end
+
 local lastUsedPluginKey = 0x0000
-function OneCore3:NewPluginType(typeName, defaultPlugin)
+function OneCore3:NewPluginType(typeName, defaultPlugin, optionsHeading)
 	if not self.plugins then
 		self.plugins = {}
 		self.defaultPlugins = {}
 		self.pluginTypeNames = {}	
+		self.pluginOptionsGroups = {}
 	end
 	
 	local pluginTypeKey = lastUsedPluginKey + 0x0100
@@ -599,6 +609,7 @@ function OneCore3:NewPluginType(typeName, defaultPlugin)
 	
 	self.defaultPlugins[pluginTypeKey] = defaultPlugin
 	self.pluginTypeNames[pluginTypeKey] = typeName
+	self.pluginOptionsGroups[pluginTypeKey] = optionsHeading
 	self[typeName] = pluginTypeKey
 		
 	ModulePrototype['Get'..typeName] = function(self, name) 
@@ -607,36 +618,41 @@ function OneCore3:NewPluginType(typeName, defaultPlugin)
 
 end
 
-OneCore3:NewPluginType('SortPlugin', 'simple')
+local tostringPattern = "%s: %s"
+local function plugintostring( self ) 
+	return tostringPattern:format(self.pluginTypeNames[pluginType], self.name)
+end 
+OneCore3:NewPluginType('SortPlugin', 'simple', 'Sorting')
 
--- Styled after NewModule from AceAddon.
-local function IsModuleTrue(self) return true end
-function OneCore3:NewPlugin(pluginType, name, ...)
+-- Styled after NewModule/NewAddon from AceAddon.
+function OneCore3:NewPlugin(pluginType, name, displayName, ...)
 	if not self.plugins[pluginType] then
-		error("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'pluginType' - Invalid value.", 2)
+		error("Usage: NewPlugin(pluginType, name, displayName, [lib, lib, lib, ...]): 'pluginType' - Invalid value.", 2)
 	end
 	
 	if type(name) ~= "string" then 
-		error(("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'name' - string expected got '%s'."):format(type(name)), 2) 
+		error(("Usage: NewPlugin(pluginType, name, displayName, [lib, lib, lib, ...]): 'name' - string expected got '%s'."):format(type(name)), 2) 
 	end
-	
+
+	if type(displayName) ~= "string" then 
+		error(("Usage: NewPlugin(pluginType, name, displayName, [lib, lib, lib, ...]): 'displayName' - string expected got '%s'."):format(type(displayName)), 2) 
+	end
+
 	if self.plugins[pluginType][name] then
-		error(("Usage: NewPlugin(pluginType, name, [lib, lib, lib, ...]): 'name' - Plugin '%s' already exists."):format(name), 2)
+		error(("Usage: NewPlugin(pluginType, name, displayName, [lib, lib, lib, ...]): 'name' - Plugin '%s' already exists."):format(name), 2)
 	end
 	
-	local plugin = AceAddon:NewAddon(string.format("%s_%s_%s", self.name or tostring(self), self.pluginTypeNames[pluginType], name))
+	local plugin = {}
+	plugin.name = name
+	plugin.type = pluginType
+	plugin.displayName = displayName
 	
-	plugin.IsModule = IsModuleTrue
-	plugin:SetEnabledState(false)
-	plugin.moduleName = name
+	local pluginmeta = {}
+	pluginmeta.__tostring = plugintostring
+	pluginmeta.__index = PluginMetatable
+	setmetatable(plugin, pluginmeta)
 
 	AceAddon:EmbedLibraries(plugin, ...)
-
-	if type(prototype) == "table" then
-		local mt = getmetatable(plugin)
-		mt.__index = PluginMetatable
-		setmetatable(plugin, mt)  -- More of a Base class type feel.
-	end
 	
 	self.plugins[pluginType][name] = plugin
 	return plugin
@@ -662,4 +678,40 @@ function ModulePrototype:GetPlugin(pluginType, name)
 	end
 	
 	return plugin
+end
+
+function ModulePrototype:EnablePlugin(pluginType, pluginName, defaultPluginName)
+	if not self.activePlugins then
+		self.activePlugins = {}
+	end
+	
+	local oldPlugin = self.activePlugins[pluginType]
+	if oldPlugin and oldPluginName == (pluginName or defaultPluginName) then
+		return
+	end
+	
+	if oldPlugin and oldPlugin.OnDisable then
+		oldPlugin:OnDisable()
+	end
+	
+	local newPlugin = self:GetPlugin(pluginType, pluginName or defaultPluginName)	
+	
+	-- this is a hack to give each addon it's own copy of the plugin.
+	local plugin = setmetatable({}, {__index = newPlugin})
+	
+	if plugin.OnInitialize then 
+		plugin:OnInitialize(self)
+	end
+	
+	self.activePlugins[pluginType] = plugin
+	
+	if plugin.OnEnable then
+		plugin:OnEnable()
+	end
+end
+
+function ModulePrototype:EnablePlugins()
+	for pluginType, defaultPluginName in pairs(self.core.defaultPlugins) do
+		self:EnablePlugin(pluginType, self.db.profile.plugins[pluginType], defaultPluginName)
+	end
 end

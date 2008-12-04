@@ -482,11 +482,44 @@ function ModulePrototype:InitializeConfiguration()
 						}
 					},
 				},
+				plugins = {
+					type = "group",
+					name = "Plugins",
+					args = {
+					}
+				},
 			}
 		}
 	end
 	
 	baseconfig = GetBaseConfig()
+	
+	--Setup Plugin Groups
+	for pluginType, heading in pairs(self.core.pluginOptionsGroups) do 
+		local values = {}
+		for pluginName, plugin in pairs(self.core.plugins[pluginType]) do
+			values[pluginName] = ("%s: %s"):format(plugin.displayName or plugin.name, plugin.description)
+		end
+		
+		local pluginGroup = {
+			type = "multiselect", 
+			name = heading,
+			values = values,
+			order = pluginType / 256 + 1,
+			get = function(info, pluginName) 
+				return self.db.profile.plugins[pluginType] == pluginName
+			end,
+			set = function(info, pluginName, state)
+				if state then
+					self.db.profile.plugins[pluginType] = pluginName
+					self:EnablePlugins(pluginType, pluginName)
+					self:OrganizeFrame(true)
+				end
+			end,
+		}
+		
+		baseconfig.args.plugins.args[self.core.pluginTypeNames[pluginType]] = pluginGroup
+	end
 	
 	if self.LoadCustomConfig then
 		self:LoadCustomConfig(baseconfig)
@@ -497,6 +530,7 @@ function ModulePrototype:InitializeConfiguration()
 	self.configs.frame = AceConfigDialog:AddToBlizOptions(self.displayName, "Frame Options", self.displayName, 'frame')
 	self.configs.colors = AceConfigDialog:AddToBlizOptions(self.displayName, "Color Options", self.displayName, 'colors')
 	self.configs.showbags = AceConfigDialog:AddToBlizOptions(self.displayName, "Bag Visibility", self.displayName, 'showbags')
+	self.configs.plugins = AceConfigDialog:AddToBlizOptions(self.displayName, "Plugins", self.displayName, 'plugins')
 end
 
 function ModulePrototype:OpenConfig()
