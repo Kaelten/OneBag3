@@ -690,8 +690,14 @@ function ModulePrototype:EnablePlugin(pluginType, pluginName, defaultPluginName)
 		return
 	end
 	
-	if oldPlugin and oldPlugin.OnDestruction then
-		oldPlugin:OnDestruction()
+	if oldPlugin then
+		if oldPlugin.UnloadCustomConfig then
+			oldPlugin:UnloadCustomConfig(self.configs.base)
+		end
+		
+		if oldPlugin.OnDestruction then
+			oldPlugin:OnDestruction()
+		end
 	end
 	
 	local newPlugin = self:GetPlugin(pluginType, pluginName or defaultPluginName)	
@@ -701,6 +707,10 @@ function ModulePrototype:EnablePlugin(pluginType, pluginName, defaultPluginName)
 	
 	if plugin.OnInitialize then 
 		plugin:OnInitialize(self)
+	end
+	
+	if plugin.LoadCustomConfig then
+		plugin:LoadCustomConfig(self.configs.base)
 	end
 	
 	self.activePlugins[pluginType] = plugin

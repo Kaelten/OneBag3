@@ -484,13 +484,9 @@ function ModulePrototype:InitializeConfiguration()
 		self:LoadCustomConfig(baseconfig)
 	end
 	
-	for pluginType, plugin in pairs(self.activePlugins) do
-		if plugin.LoadCustomConfig then
-			plugin:LoadCustomConfig(baseconfig)
-		end
-	end
-	
 	AceConfig:RegisterOptionsTable(self.displayName, baseconfig)
+	
+	self.configs.base = baseconfig
 	self.configs.main = AceConfigDialog:AddToBlizOptions(self.displayName, nil, nil, 'general')
 	self.configs.frame = AceConfigDialog:AddToBlizOptions(self.displayName, "Frame Options", self.displayName, 'frame')
 	self.configs.colors = AceConfigDialog:AddToBlizOptions(self.displayName, "Color Options", self.displayName, 'colors')

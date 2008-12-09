@@ -15,6 +15,10 @@ function SimpleSort:OnInitialize(module)
 
 	self.module = module
 	self.db = self:GetDBNamespace(module.db, 'SimpleSortDB', defaults)	
+	
+	if self.module:IsBagOpen() then
+		self.module:UpdateFrame()
+	end
 end
 
 function SimpleSort:LoadCustomConfig(baseconfig)
@@ -100,6 +104,12 @@ function SimpleSort:GetButtonOrder()
 	end
 	
 	return slots
+end
+
+function SimpleSort:UnloadCustomConfig()
+	if self.baseconfig then
+		self.baseconfig.args.frame.args.bag.plugins['SimpleSort'] = nil
+	end
 end
 
 local TestSort = OneCore3:NewPlugin(OneCore3.SortPlugin, 'test', 'BROKEN')

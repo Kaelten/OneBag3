@@ -79,8 +79,8 @@ function OneBag3:OnInitialize()
 	
 	self.sidebar:Hide()
 
-	self:EnablePlugins()	
 	self:InitializeConfiguration()
+	self:EnablePlugins()
 --	self:OpenConfig()
 	
 end
