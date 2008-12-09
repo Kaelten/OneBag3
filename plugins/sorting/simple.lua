@@ -69,7 +69,12 @@ function SimpleSort:LoadCustomConfig(baseconfig)
 		},
 		
 	}
+end
 
+function SimpleSort:UnloadCustomConfig()
+	if self.baseconfig then
+		self.baseconfig.args.frame.args.bag.plugins['SimpleSort'] = nil
+	end
 end
 
 function SimpleSort:GetButtonOrder()
@@ -105,11 +110,3 @@ function SimpleSort:GetButtonOrder()
 	
 	return slots
 end
-
-function SimpleSort:UnloadCustomConfig()
-	if self.baseconfig then
-		self.baseconfig.args.frame.args.bag.plugins['SimpleSort'] = nil
-	end
-end
-
-local TestSort = OneCore3:NewPlugin(OneCore3.SortPlugin, 'test', 'BROKEN')
