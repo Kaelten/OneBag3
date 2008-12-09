@@ -231,7 +231,7 @@ function ModulePrototype:InitializeConfiguration()
 									type = "range",
 									name = "Number of Columns",
 									desc = "Sets the maximum number of columns to use",
-									min = 1, max = 30, step = 1,
+									min = 1, max = 32, step = 1,
 									get = function(info)
 										return self.db.profile.appearance.cols
 									end,
