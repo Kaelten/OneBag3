@@ -219,27 +219,15 @@ function ModulePrototype:InitializeConfiguration()
 							name = L["Bag Behavior"],
 							order = 2,
 							inline = true,
+							plugins = {},
 							args = {
 								description = {
 									order = 1,
 									type = 'description',
 									name = L["Bag Behavior Description"]:format(self.displayName),
 								},
-								bagbreak = {
-									order = 20,
-									type = "toggle",
-									name = "Bag Break",
-									desc = "Forces a row break to happen at the end of each bag.",
-									get = function(info)
-										return self.db.profile.behavior.bagbreak
-									end,
-									set = function(info, value)
-										self.db.profile.behavior.bagbreak = value
-										self:OrganizeFrame(true)
-									end
-								},
 								cols = {
-									order = 25, 
+									order = 10, 
 									type = "range",
 									name = "Number of Columns",
 									desc = "Sets the maximum number of columns to use",
@@ -251,35 +239,6 @@ function ModulePrototype:InitializeConfiguration()
 										self.db.profile.appearance.cols = cols
 										self:OrganizeFrame(true)
 									end	
-								},
-								valign = {
-									order = 30,
-									type = 'select',
-									name = 'Vertical Alignment',
-									values = {'Top', 'Bottom'},
-									style = 'radio',
-									get = function(info)
-										return self.db.profile.behavior.valign
-									end,
-									set = function(info, value)
-										self.db.profile.behavior.valign = value
-										self:OrganizeFrame(true)
-									end
-								},
-								bagorder = {
-									order = 35,
-									type = 'select',
-									name = "Bag Order",
-									desc = "Controls the order which the bags are shown.",
-									values = {'Normal', 'Backwards'},
-									style = 'radio',
-									get = function(info)
-										return self.db.profile.behavior.bagorder
-									end,
-									set = function(info, value)
-										self.db.profile.behavior.bagorder = value
-										self:OrganizeFrame(true)
-									end
 								},
 							}
 						}
@@ -523,6 +482,12 @@ function ModulePrototype:InitializeConfiguration()
 	
 	if self.LoadCustomConfig then
 		self:LoadCustomConfig(baseconfig)
+	end
+	
+	for pluginType, plugin in pairs(self.activePlugins) do
+		if plugin.LoadCustomConfig then
+			plugin:LoadCustomConfig(baseconfig)
+		end
 	end
 	
 	AceConfig:RegisterOptionsTable(self.displayName, baseconfig)

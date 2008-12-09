@@ -176,7 +176,7 @@ function ModulePrototype:ColorBorder(slot, fcolor)
 		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
 		if link then
 			local rarity = select(3, GetItemInfo(link))
-			if rarity > 1 or self.db.profile.appearance.lowlevel then
+			if rarity and (rarity > 1 or self.db.profile.appearance.lowlevel) then
 				-- going with this method as it should never produce a point where I don't have a color to work with.
 				color = colorCache[rarity]
 				if not color then
@@ -690,8 +690,8 @@ function ModulePrototype:EnablePlugin(pluginType, pluginName, defaultPluginName)
 		return
 	end
 	
-	if oldPlugin and oldPlugin.OnDisable then
-		oldPlugin:OnDisable()
+	if oldPlugin and oldPlugin.OnDestruction then
+		oldPlugin:OnDestruction()
 	end
 	
 	local newPlugin = self:GetPlugin(pluginType, pluginName or defaultPluginName)	
@@ -704,10 +704,6 @@ function ModulePrototype:EnablePlugin(pluginType, pluginName, defaultPluginName)
 	end
 	
 	self.activePlugins[pluginType] = plugin
-	
-	if plugin.OnEnable then
-		plugin:OnEnable()
-	end
 end
 
 function ModulePrototype:EnablePlugins()

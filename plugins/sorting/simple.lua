@@ -14,7 +14,58 @@ function SimpleSort:OnInitialize(module)
 	}
 
 	self.module = module
-	self.db = self:GetDBNamespace(module.db, 'SimpleSortDB', defaults)
+	self.db = self:GetDBNamespace(module.db, 'SimpleSortDB', defaults)	
+end
+
+function SimpleSort:LoadCustomConfig(baseconfig)
+	self.baseconfig = baseconfig
+	
+	baseconfig.args.frame.args.bag.plugins['SimpleSort'] = {
+		bagbreak = {
+			order = 2,
+			type = "toggle",
+			name = "Bag Break",
+			desc = "Forces a row break to happen at the end of each bag.",
+			get = function(info)
+				return self.db.profile.behavior.bagbreak
+			end,
+			set = function(info, value)
+				self.db.profile.behavior.bagbreak = value
+				self.module:OrganizeFrame(true)
+			end
+		},
+		valign = {
+			order = 11,
+			type = 'select',
+			name = 'Vertical Alignment',
+			values = {'Top', 'Bottom'},
+			style = 'radio',
+			get = function(info)
+				return self.db.profile.behavior.valign
+			end,
+			set = function(info, value)
+				self.db.profile.behavior.valign = value
+				self.module:OrganizeFrame(true)
+			end
+		},
+		bagorder = {
+			order = 12,
+			type = 'select',
+			name = "Bag Order",
+			desc = "Controls the order which the bags are shown.",
+			values = {'Normal', 'Backwards'},
+			style = 'radio',
+			get = function(info)
+				return self.db.profile.behavior.bagorder
+			end,
+			set = function(info, value)
+				self.db.profile.behavior.bagorder = value
+				self.module:OrganizeFrame(true)
+			end
+		},
+		
+	}
+
 end
 
 function SimpleSort:GetButtonOrder()
