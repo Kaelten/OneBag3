@@ -409,9 +409,26 @@ end
 
 -- OneCore!
 local AceAddon = LibStub("AceAddon-3.0")
-OneCore3 = AceAddon:NewAddon("OneCore3", "AceEvent-3.0")
+OneCore3 = AceAddon:NewAddon("OneCore3", "AceEvent-3.0", "AceHook-3.0")
 OneCore3:SetDefaultModulePrototype(ModulePrototype)
 OneCore3:SetDefaultModuleLibraries("AceEvent-3.0", "AceHook-3.0", "AceConsole-3.0")
+
+
+function OneCore3:OnInitialize()
+	-- This doubles as a LoD manager and as a way to block the game's bank window from showing up
+	self:RawHook("BankFrame_OnEvent", function(event)
+	 	if not self.bankLoaded then
+			LoadAddOn("OneBank3")
+			self.bankLoaded = true
+		end
+		
+        local module = self:GetModule("OneBank3", true)
+		if not module or not module:IsEnabled()  then
+			self.hooks.BankFrame_OnEvent(event)
+		end
+	end, true)
+end
+
 
 function OneCore3:BuildFrame(basename, moneyType)
 	local frame = self:BuildBaseFrame(basename)

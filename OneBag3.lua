@@ -4,7 +4,7 @@ OneBag3 = OneCore3:NewModule("OneBag3")
 local AceDB3 = LibStub('AceDB-3.0')
 
 function OneBag3:OnInitialize()
-	self.db = AceDB3:New("OneBagDB")
+	self.db = AceDB3:New("OneBag3DB")
 	self.db:RegisterDefaults(self.defaults)
 	
 	self.displayName = "OneBag3"
