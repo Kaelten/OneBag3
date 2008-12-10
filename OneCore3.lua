@@ -416,15 +416,15 @@ OneCore3:SetDefaultModuleLibraries("AceEvent-3.0", "AceHook-3.0", "AceConsole-3.
 
 function OneCore3:OnInitialize()
 	-- This doubles as a LoD manager and as a way to block the game's bank window from showing up
-	self:RawHook("BankFrame_OnEvent", function(event)
+	self:RawHook("BankFrame_OnEvent", function(...)
 	 	if not self.bankLoaded then
 			LoadAddOn("OneBank3")
 			self.bankLoaded = true
 		end
 		
         local module = self:GetModule("OneBank3", true)
-		if not module or not module:IsEnabled()  then
-			self.hooks.BankFrame_OnEvent(event)
+		if not module or not module:IsEnabled() then
+			self.hooks.BankFrame_OnEvent(...)
 		end
 	end, true)
 end
