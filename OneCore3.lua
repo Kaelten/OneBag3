@@ -284,7 +284,14 @@ function ModulePrototype:GetBag(parent, id)
 end
 
 function ModulePrototype:GetButton(parent, id)
-	local button = CreateFrame("Button", parent:GetName().."Item"..id, parent, "ContainerFrameItemButtonTemplate")
+	local bagID = parent:GetID()
+	local buttonType = "ContainerFrameItemButtonTemplate"
+	
+	if bagID == -1 then
+		buttonType = "BankItemButtonGenericTemplate"
+	end
+	
+	local button = CreateFrame("Button", parent:GetName().."Item"..id, parent, buttonType)
 	
 	button:SetID(id)
 	button:SetFrameLevel(parent:GetParent():GetFrameLevel()+20)
