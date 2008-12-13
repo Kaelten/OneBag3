@@ -234,40 +234,6 @@ function ModulePrototype:UnhighlightBagSlots(bagid)
 	end
 end
 
-function ModulePrototype:GetBagButton(bag, parent)
-	local button = CreateFrame("CheckButton", "OBSideBarBag"..bag.."Slot", parent, "BagSlotButtonTemplate")
-	
-	button:SetScale(1.27)
-	
-	self:SecureHookScript(button, "OnEnter", function(button)
-		self:HighlightBagSlots(button:GetID()-19)
-	end)
-	
-	button:SetScript("OnLeave", function(button)
-		if not button:GetChecked() then
-			self:UnhighlightBagSlots(button:GetID()-19)
-			self.frame.bags[button:GetID()-19].colorLocked = false
-		else
-			self.frame.bags[button:GetID()-19].colorLocked = true
-		end
-		GameTooltip:Hide()
-	end)
-	
-	button:SetScript("OnClick", function(button) 
-		local haditem = PutItemInBag(button:GetID())
-
-		if haditem then
-			button:SetChecked(not button:GetChecked())
-		end 
-	end)
-	
-	button:SetScript("OnReceiveDrag", function(button) 
-		PutItemInBag(button:GetID())
-	end)
-	
-	return button
-end
-
 function ModulePrototype:GetBag(parent, id)
 	local bag = CreateFrame("Frame", parent:GetName().."Bag"..id, parent)
 	bag:SetID(id)
@@ -430,7 +396,7 @@ function OneCore3:OnInitialize()
 		end
 		
         local module = self:GetModule("OneBank3", true)
-		if not module or not module:IsEnabled() then
+		if not module or not module:IsEnabled() or true then
 			self.hooks.BankFrame_OnEvent(...)
 		end
 	end, true)

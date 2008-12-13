@@ -239,3 +239,37 @@ function OneBag3:GetBackbackButton(parent)
 	
 	return button	
 end
+
+function OneBag3:GetBagButton(bag, parent)
+
+	local button = CreateFrame("CheckButton", "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')	
+	button:SetScale(1.27)
+	
+	self:SecureHookScript(button, "OnEnter", function(button)
+		self:HighlightBagSlots(button:GetID()-19)
+	end)
+	
+	button:SetScript("OnLeave", function(button)
+		if not button:GetChecked() then
+			self:UnhighlightBagSlots(button:GetID()-19)
+			self.frame.bags[button:GetID()-19].colorLocked = false
+		else
+			self.frame.bags[button:GetID()-19].colorLocked = true
+		end
+		GameTooltip:Hide()
+	end)
+	
+	button:SetScript("OnClick", function(button) 
+		local haditem = PutItemInBag(button:GetID())
+
+		if haditem then
+			button:SetChecked(not button:GetChecked())
+		end 
+	end)
+	
+	button:SetScript("OnReceiveDrag", function(button) 
+		PutItemInBag(button:GetID())
+	end)
+	
+	return button
+end
