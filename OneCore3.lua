@@ -396,7 +396,7 @@ function OneCore3:OnInitialize()
 		end
 		
         local module = self:GetModule("OneBank3", true)
-		if not module or not module:IsEnabled() or true then
+		if not module or not module:IsEnabled() then
 			self.hooks.BankFrame_OnEvent(...)
 		end
 	end, true)
