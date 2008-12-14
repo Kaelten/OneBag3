@@ -59,6 +59,10 @@ function FrameMetatable:CustomizeFrame(db)
 		self.sidebar:CustomizeFrame(db)
 	end
 	
+	if self.purchase then
+		self.purchase:CustomizeFrame(db)
+	end
+	
 	if self.slots then
 		for _, slot in pairs(self.slots) do
 			slot:SetFrameStrata(self.handler.stratas[db.behavior.strata])
