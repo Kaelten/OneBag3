@@ -351,7 +351,7 @@ function ModulePrototype:OrganizeFrame(force)
 end
 
 function ModulePrototype:UpdateBag(bag)
-	if not self.frame.bags[bag] then
+	if not self.frame.bags or not self.frame.bags[bag] then
 		return
 	end
 	
@@ -582,7 +582,7 @@ function PluginMetatable:GetDBNamespace(db, namespace, defaults)
 		return db.children[namespace]
 	end
 	
-	return db:RegisterNamespace('SimpleSortDB', defaults)
+	return db:RegisterNamespace(namespace, defaults)
 end
 
 local lastUsedPluginKey = 0x0000
