@@ -27,7 +27,8 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 
 localizations\locals.xml
 
-OneCore3.lua
+core\core.xml
+
 OneConfig3.lua
 
 plugins\sorting\simple.lua
