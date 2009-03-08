@@ -1,6 +1,6 @@
 
 local AceConfig = LibStub("AceConfig-3.0")
-local AceConfigDialog   = LibStub("AceConfigDialog-3.0")
+local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')
 local ModulePrototype = OneCore3.defaultModulePrototype
@@ -453,32 +453,32 @@ function ModulePrototype:InitializeConfiguration()
 	
 	baseconfig = GetBaseConfig()
 	
-	--Setup Plugin Groups
-	for pluginType, heading in pairs(self.core.pluginOptionsGroups) do 
-		local values = {}
-		for pluginName, plugin in pairs(self.core.plugins[pluginType]) do
-			values[pluginName] = ("%s: %s"):format(plugin.displayName or plugin.name, plugin.description)
-		end
-		
-		local pluginGroup = {
-			type = "multiselect", 
-			name = heading,
-			values = values,
-			order = pluginType / 256 + 1,
-			get = function(info, pluginName) 
-				return self.db.profile.plugins[pluginType] == pluginName
-			end,
-			set = function(info, pluginName, state)
-				if state then
-					self.db.profile.plugins[pluginType] = pluginName
-					self:EnablePlugins(pluginType, pluginName)
-					self:OrganizeFrame(true)
-				end
-			end,
-		}
-		
-		baseconfig.args.plugins.args[self.core.pluginTypeNames[pluginType]] = pluginGroup
-	end
+    -- --Setup Plugin Groups
+    -- for pluginType, heading in pairs(self.core.pluginOptionsGroups) do 
+    --  local values = {}
+    --  for pluginName, plugin in pairs(self.core.plugins[pluginType]) do
+    --      values[pluginName] = ("%s: %s"):format(plugin.displayName or plugin.name, plugin.description)
+    --  end
+    --  
+    --  local pluginGroup = {
+    --      type = "multiselect", 
+    --      name = heading,
+    --      values = values,
+    --      order = pluginType / 256 + 1,
+    --      get = function(info, pluginName) 
+    --          return self.db.profile.plugins[pluginType] == pluginName
+    --      end,
+    --      set = function(info, pluginName, state)
+    --          if state then
+    --              self.db.profile.plugins[pluginType] = pluginName
+    --              self:EnablePlugins(pluginType, pluginName)
+    --              self:OrganizeFrame(true)
+    --          end
+    --      end,
+    --  }
+    --  
+    --  baseconfig.args.plugins.args[self.core.pluginTypeNames[pluginType]] = pluginGroup
+    -- end
 	
 	if self.LoadCustomConfig then
 		self:LoadCustomConfig(baseconfig)

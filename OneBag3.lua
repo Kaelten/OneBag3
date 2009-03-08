@@ -1,5 +1,6 @@
 
-local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')
+local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')   
+
 OneBag3 = OneCore3:NewModule("OneBag3")
 local AceDB3 = LibStub('AceDB-3.0')
 
@@ -33,7 +34,7 @@ function OneBag3:OnInitialize()
 		local UpdateBag = function(event, bag) 
 			self:UpdateBag(bag)
 		end
-		
+
 		self:RegisterEvent("BAG_UPDATE", UpdateBag)
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
@@ -80,7 +81,7 @@ function OneBag3:OnInitialize()
 	self.sidebar:Hide()
 
 	self:InitializeConfiguration()
-	self:EnablePlugins()
+--	self:EnablePlugins()
 --	self:OpenConfig()
 	
 end
@@ -121,7 +122,7 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
 	
 end
-
+     
 -- Custom Configuration
 function OneBag3:LoadCustomConfig(baseconfig)
 	local bagvisibility = {
@@ -273,3 +274,4 @@ function OneBag3:GetBagButton(bag, parent)
 	
 	return button
 end
+    

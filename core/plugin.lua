@@ -1,19 +1,6 @@
 local ModulePrototype = OneCore3.defaultModulePrototype
 local AceAddon = LibStub("AceAddon-3.0")
 
--- Plugin Harness
-local PluginMetatable = { 
-	displayName = 'Unknown',
-	description = 'This plugin may be able to do all sorts of impossible things! ... Or Not!',
-}
-
-function PluginMetatable:GetDBNamespace(db, namespace, defaults)
-	if db.children and db.children[namespace] then
-		return db.children[namespace]
-	end
-	
-	return db:RegisterNamespace(namespace, defaults)
-end
 
 local lastUsedPluginKey = 0x0000
 function OneCore3:NewPluginType(typeName, defaultPlugin, optionsHeading)
@@ -43,13 +30,13 @@ function OneCore3:NewPluginType(typeName, defaultPlugin, optionsHeading)
 end
 
 local tostringPattern = "%s: %s"
-local function plugintostring( self ) 
+local function plugintostring(self) 
 	return tostringPattern:format(self.pluginTypeNames[pluginType], self.name)
 end 
 OneCore3:NewPluginType('SortPlugin', 'simple', 'Sorting')
 
 -- Styled after NewModule/NewAddon from AceAddon.
-function OneCore3:NewPlugin(pluginType, name, displayName, ...)
+function OneCore3:NewPlugin(pluginType , name, displayName, ...)
 	if not self.plugins[pluginType] then
 		error("Usage: NewPlugin(pluginType, name, displayName, [lib, lib, lib, ...]): 'pluginType' - Invalid value.", 2)
 	end

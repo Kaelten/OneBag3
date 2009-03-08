@@ -1,6 +1,6 @@
 -- OneCore!
 local AceAddon = LibStub("AceAddon-3.0")
-OneCore3 = AceAddon:NewAddon("OneCore3", "AceEvent-3.0", "AceHook-3.0")
+local OneCore3 = AceAddon:NewAddon("OneCore3", "AceEvent-3.0", "AceHook-3.0")
 OneCore3:SetDefaultModuleLibraries("AceEvent-3.0", "AceHook-3.0", "AceConsole-3.0")
 
 

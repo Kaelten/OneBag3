@@ -1,3 +1,5 @@
+local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')   
+
 local ModulePrototype = {
     colWidth = 39,
     rowHeight = 39,

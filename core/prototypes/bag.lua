@@ -1,3 +1,5 @@
+local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')   
+
 -- BAGTYPE_QUIVER = Quiver + Ammo
 local BAGTYPE_QUIVER = 0x0001 + 0x0002 
 -- BAGTYPE_SOUL = Soul Bags
