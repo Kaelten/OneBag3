@@ -38,7 +38,7 @@ function OneBag3:OnInitialize()
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
 		
-		self.frame.name:SetText(UnitName("player").."'s Bags")
+		self.frame.name:SetText(L["%s's Bags"]:format(UnitName("player")))
 		
 		if self.frame.sidebarButton:GetChecked() then
 			self.frame.sidebar:Show()
@@ -128,18 +128,18 @@ end
 function OneBag3:LoadCustomConfig(baseconfig)
 	local bagvisibility = {
 		type = "group",
-		name = "Specific Bag Filters",
+		name = L["Specific Bag Filters"],
 		order = 2,
 		inline = true,
 		args = {}
 	}
 
 	local names = {
-		[0] = 'Backpack',
-		[1] = 'First Bag',
-		[2] = 'Second Bag',
-		[3] = 'Third Bag',
-		[4] = 'Fourth Bag',
+		[0] = L['Backpack'],
+		[1] = L['First Bag'],
+		[2] = L['Second Bag'],
+		[3] = L['Third Bag'],
+		[4] = L['Fourth Bag'],
 	}
 	
 	for id, text in pairs(names) do
@@ -147,7 +147,7 @@ function OneBag3:LoadCustomConfig(baseconfig)
 			order = 5 * id + 5,
 			type = "toggle",
 			name = text,
-			desc = ("Toggles the display of your %s."):format(text),
+			desc = L[("Toggles the display of your %s."):format(text)],
 			get = function(info)
 				return self.db.profile.show[id]
 			end,
