@@ -1,26 +1,25 @@
 
-local OneCore3 = LibStub('AceAddon-3.0'):GetAddon('OneCore3')   
-
-OneBag3 = OneCore3:NewModule("OneBag3")
+local OneBag3 = LibStub('AceAddon-3.0'):NewAddon('OneBag3', 'OneCore-1.0', 'OneFrame-1.0', 'OneConfig-1.0', 'AceHook-3.0', 'AceEvent-3.0')   
 local AceDB3 = LibStub('AceDB-3.0')
-
+     
+--- Handles the do once configuration, including db, frames and configuration
 function OneBag3:OnInitialize()
 	self.db = AceDB3:New("OneBag3DB")
 	self.db:RegisterDefaults(self.defaults)
 	
 	self.displayName = "OneBag3"
-	self.core = OneCore3
 	
 	self.bagIndexes = {0, 1, 2, 3, 4}
 	
-	self.frame = self.core:BuildFrame("OneBagFrame")
+	self.frame = self:CreateMainFrame("OneBagFrame")
 	self.frame.handler = self
 	
 	self.frame:SetPosition(self.db.profile.position)
 	self.frame:CustomizeFrame(self.db.profile)
 	self.frame:SetSize(200, 200)
 	
-	self.Show = function() self.frame:Show() end
+	self.Show = self.OpenBag
+	self.Hide = self.CloseBag
 	
 	self.frame:SetScript("OnShow", function()
 		if not self.frame.slots then
@@ -54,7 +53,7 @@ function OneBag3:OnInitialize()
 		self.sidebar:Hide()
 	end)
 	
-	self.sidebar = OneCore3:BuildSideBar("OneBagSideFrame", self.frame)
+	self.sidebar = self:CreateSideBar("OneBagSideFrame", self.frame)
 	self.sidebar.handler = self
 	self.frame.sidebar = self.sidebar
 	
@@ -63,13 +62,13 @@ function OneBag3:OnInitialize()
 	self.sidebar:SetScript("OnShow", function()
 		if not self.sidebar.buttons then
 			self.sidebar.buttons = {}
-			local button = self:GetBackbackButton(self.sidebar)
+			local button = self:CreateBackpackButton(self.sidebar)
 			button:ClearAllPoints()
 			button:SetPoint("TOP", self.sidebar, "TOP", 0, -15)
 			
 			self.sidebar.buttons[-1] = button
 			for bag=0, 3 do
-				local button = self:GetBagButton(bag, self.sidebar)
+				local button = self:CreateBagButton(bag, self.sidebar)
 				button:ClearAllPoints()
 				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
 				
@@ -86,6 +85,8 @@ function OneBag3:OnInitialize()
 	
 end
 
+
+--- Sets up hooks and registers events
 function OneBag3:OnEnable()
 	self:SecureHook("IsBagOpen")
 	self:RawHook("ToggleBag", true)
@@ -120,10 +121,10 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("TRADE_CLOSED", 			close)
 	self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
 	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
-	
 end
      
--- Custom Configuration
+--- Provides the custom config options for OneConfig
+-- @param baseconfig the base configuration table into which the custom options are injected
 function OneBag3:LoadCustomConfig(baseconfig)
 	local bagvisibility = {
 		type = "group",
@@ -160,18 +161,23 @@ function OneBag3:LoadCustomConfig(baseconfig)
 	baseconfig.args.showbags.args.bag = bagvisibility
 end
 
--- Hooks handlers
-function OneBag3:IsBagOpen(bag)
-	if type(bag) == "number" and (bag < 0 or bag > 4) then
+-- Hooks handlers 
+
+--- A replacement for the IsBagOpen function that provides valid results when using OneBag
+-- @param bagid the numeric id of the bag being checked
+function OneBag3:IsBagOpen(bagid)
+	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
 		return
 	end
 	
-	return self.isOpened and bag or nil
+	return self.isOpened and bagid or nil
 end
 
-function OneBag3:ToggleBag(bag)
-	if type(bag) == "number" and (bag < 0 or bag > 4) then
-		return self.hooks.ToggleBag(bag)
+--- Toggles the visibility of the bag frame
+-- @param bagid the numeric id of the bag being checked
+function OneBag3:ToggleBag(bagid)
+	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+		return self.hooks.ToggleBag(bagid)
 	end
 	
 	if self.frame:IsVisible() then
@@ -180,10 +186,12 @@ function OneBag3:ToggleBag(bag)
 		self:OpenBag()
 	end
 end
-
-function OneBag3:OpenBag(bag)
-	if type(bag) == "number" and (bag < 0 or bag > 4) then
-		return self.hooks.OpenBag(bag)
+                                                       
+--- Shows the bag frame
+-- @param bagid the numeric id of the bag being checked
+function OneBag3:OpenBag(bagid)
+	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+		return self.hooks.OpenBag(bagid)
 	end
 	
 	self.frame:Show()
@@ -191,18 +199,22 @@ function OneBag3:OpenBag(bag)
 	self.isOpened = true
 end
 
-
-function OneBag3:CloseBag(bag)
-	if type(bag) == "number" and (bag < 0 or bag > 4) then
-		return self.hooks.CloseBag(bag)
+--- Hides the bag frame
+-- @param bagid the numeric id of the bag being checked
+function OneBag3:CloseBag(bagid)
+	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+		return self.hooks.CloseBag(bagid)
 	end
 	
 	self.frame:Hide()
 	self.isOpened = false
 end
+                    
+-- Custom button getters
 
---Custom Button Getter
-function OneBag3:GetBackbackButton(parent)
+--- Creates the backpack button, which differs signifcantly from the other bag buttons
+-- @param parent the parent frame which the button will be attached to.
+function OneBag3:CreateBackpackButton(parent)
 	local button = CreateFrame("CheckButton", "OBSideBarBackpackButton", parent, "ItemButtonTemplate")
 	button:SetID(0)
 	
@@ -241,8 +253,10 @@ function OneBag3:GetBackbackButton(parent)
 	return button	
 end
 
-function OneBag3:GetBagButton(bag, parent)
-
+--- Creates a button for a bag
+-- @param bagid the numeric id of the bag being checked     
+-- @param parent the parent frame which the button will be attached to.
+function OneBag3:CreateBagButton(bag, parent)
 	local button = CreateFrame("CheckButton", "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')	
 	button:SetScale(1.27)
 	

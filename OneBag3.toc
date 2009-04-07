@@ -7,11 +7,10 @@
 ## Author: Kaelten
 ## X-eMail: kaelten@gmail.com
 ## X-Category: Bags & Inventory
-## X-Website: http://wow.curseforge.com/projects/OneBag3/ 
+## X-Website: http://www.wowace.com/projects/OneBag3/ 
 ## X-Date: @project-timestamp@
 ## Version: @project-version@
 ## SavedVariables: OneBag3DB
-## OptDeps: Ace3
+## Deps: Ace3, OneCore
 
-libs.xml
-load.xml
+OneBag3.xml
