@@ -20,7 +20,7 @@ end
 local ModulePrototype = OneCore3.defaultModulePrototype
 
 function ModulePrototype:_prepPlugins(type)
-    for pluginName, plugin in OneCore3:IteratePluginsByType(type)
+    for pluginName, plugin in OneCore3:IteratePluginsByType(type) do
         plugin:SetupDB(self.moduleName)
     end
 end
