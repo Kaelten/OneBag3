@@ -86,7 +86,6 @@ function OneBag3:OnInitialize()
 	
 end
 
-
 --- Sets up hooks and registers events
 function OneBag3:OnEnable()
 	self:SecureHook("IsBagOpen")
