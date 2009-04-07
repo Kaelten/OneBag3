@@ -2,7 +2,7 @@
 
 OneBag has a long history of minimalism and OneBag3 will continue to uphold the standard of easy of use and simplicity it's predecessors set.  Like the earlier versions OneBag3 will continue to offer powerful options for those who wish to delve a little deeper.  
 
-Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 213 lines of code unique to OneBag3, and only 981 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries].
+Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 213 lines of code unique to OneBag3, and only 981 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries]].
 
 ===Features
 * Combines all of your bags into one.
@@ -22,9 +22,11 @@ Also in the vein of earlier iterations I've kept to the philosophy of doing as l
 
 ===The Family
 ; OneCore
+: The brains and the brawn of the outfit, Core does all the heavy lifting both logic and layout wise.  This is embedded in OneBag by default, and you shouldn't need to worry about installing it unless you're running no-lib builds.
 : [[http://www.wowace.com/projects/OneCore|On WowAce]]
 : [[http://wow.curse.com/downloads/wow-addons/details/onecore.aspx|On Curse]]
 ; OneBank3 
+: OneBag's brother who always like the safety of town, Bank does pretty much the exact same job for your bankslots as OneBag does for your character's bags.  
 : [[http://www.wowace.com/projects/OneBank3|On WowAce]]
 : [[http://wow.curse.com/downloads/wow-addons/details/onebank3.aspx|On Curse]]
 ; OneRing3
