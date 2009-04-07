@@ -11,6 +11,6 @@
 ## X-Date: @project-timestamp@
 ## Version: @project-version@
 ## SavedVariables: OneBag3DB
-## Deps: Ace3, OneCore
+## OptionalDeps: Ace3, OneCore
 
 OneBag3.xml

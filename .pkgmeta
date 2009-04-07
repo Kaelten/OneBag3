@@ -12,6 +12,6 @@ externals:
 	libs/AceConsole-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConsole-3.0
 	libs/AceGUI-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceGUI-3.0
 	libs/AceConfig-3.0: svn://svn.wowace.com/wow/ace3/mainline/trunk/AceConfig-3.0
-	libs/OneCore-1.0: hg://hg.wowace.com/wow/onecore/mainline/OneCore-1.0
+	libs/OneCore-1.0: http://hg.wowace.com/wow/onecore/mainline/OneCore-1.0
 	
 license-output: LICENSE.txt
