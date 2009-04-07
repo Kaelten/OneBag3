@@ -1,6 +1,7 @@
 
 local OneBag3 = LibStub('AceAddon-3.0'):NewAddon('OneBag3', 'OneCore-1.0', 'OneFrame-1.0', 'OneConfig-1.0', 'AceHook-3.0', 'AceEvent-3.0')   
 local AceDB3 = LibStub('AceDB-3.0')
+local L = LibStub("AceLocale-3.0"):GetLocale("OneBag3") 
      
 --- Handles the do once configuration, including db, frames and configuration
 function OneBag3:OnInitialize()
@@ -135,18 +136,19 @@ function OneBag3:LoadCustomConfig(baseconfig)
 	}
 
 	local names = {
-		[0] = L['Backpack'],
-		[1] = L['First Bag'],
-		[2] = L['Second Bag'],
-		[3] = L['Third Bag'],
-		[4] = L['Fourth Bag'],
+		[0] = 'Backpack',
+		[1] = 'First Bag',
+		[2] = 'Second Bag',
+		[3] = 'Third Bag',
+		[4] = 'Fourth Bag',
 	}
-	
+	          
+	-- this gets localized kinda oddly, should let both the desc and name localized seperately
 	for id, text in pairs(names) do
 		bagvisibility.args[tostring(id)] = {
 			order = 5 * id + 5,
 			type = "toggle",
-			name = text,
+			name = L[text],
 			desc = L[("Toggles the display of your %s."):format(text)],
 			get = function(info)
 				return self.db.profile.show[id]
