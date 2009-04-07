@@ -1,0 +1,40 @@
+**OneBag3** is the latest in a long line of bag replacements for the default game bags that will combine all of your bags into one frame.
+
+OneBag has a long history of minimalism and OneBag3 will continue to uphold the standard of easy of use and simplicity it's predecessors set.  Like the earlier versions OneBag3 will continue to offer powerful options for those who wish to delve a little deeper.  
+
+Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 213 lines of code unique to OneBag3, and only 981 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries].
+
+===Features
+* Combines all of your bags into one.
+* Customizable number of columns
+* Inherent support for addons that interact with the default bags
+* Color coded slots by item rarity or bag type
+* Will automatically open and close for you when visiting the auction house, bank, mailbox, merchant or when trading with another player.
+* Allows only certain bags to be displayed, either by slot or type
+* Custom bag bar which will highlight it's associated slots on mouseover.  This highlighting can be locked in place by clicking.
+* Customizable scale, background color, alpha, and more.
+* Clean and powerful graphical configuration                                                                 
+
+===Future Plans
+* Reintroduce missing features that existed in OB2
+* Reintroduce the plugin system from earlier in this beta.  I had to remove it due to architectural issues.
+* Release OneRing3, OneView3, and OneVault3
+
+===The Family
+; OneCore
+: [[http://www.wowace.com/projects/OneCore|On WowAce]]
+: [[http://wow.curse.com/downloads/wow-addons/details/onecore.aspx|On Curse]]
+; OneBank3 
+: [[http://www.wowace.com/projects/OneBank3|On WowAce]]
+: [[http://wow.curse.com/downloads/wow-addons/details/onebank3.aspx|On Curse]]
+; OneRing3
+: Coming Soon(tm)
+; OneView3
+: Coming Soon(tm)
+: OneVault3
+: Coming Soon(tm)                                                 
+
+===Bug Reports & Suggestions
+Please report all bug reports to [[http://www.wowace.com/projects/OneBag3/tickets|my tracker on WowAce]].
+
+I want to thank all the users who've been using OneBag for so long.  I'm hoping not to leave the code on autopilot quite like I did once OB2 went stable, although it was nice to not have to touch it for almost two years.
