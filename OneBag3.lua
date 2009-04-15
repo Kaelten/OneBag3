@@ -52,8 +52,9 @@ function OneBag3:OnInitialize()
 		self:UnregisterEvent("BAG_UPDATE")
 		self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
 		self:UnregisterEvent("UPDATE_INVENTORY_ALERTS")
-		
+
 		self.sidebar:Hide()
+		self:CloseBag()                                  
 	end)
 	
 	self.sidebar = self:CreateSideBar("OneBagSideFrame", self.frame)
@@ -97,7 +98,7 @@ function OneBag3:OnEnable()
 	self:RawHook("CloseBackpack", "CloseBag", true)
 	self:RawHook("ToggleBackpack", "ToggleBag", true)
 	
-	local open = function() 
+	local open = function()             
 		self.wasOpened = self.isOpened
 		if not self.isOpened then
 			self:OpenBag() 
@@ -181,7 +182,7 @@ function OneBag3:ToggleBag(bagid)
 	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
 		return self.hooks.ToggleBag(bagid)
 	end
-	
+ 
 	if self.frame:IsVisible() then
 		self:CloseBag()
 	else
@@ -195,7 +196,7 @@ function OneBag3:OpenBag(bagid)
 	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
 		return self.hooks.OpenBag(bagid)
 	end
-	
+
 	self.frame:Show()
 	self.isReopened = self.isOpened
 	self.isOpened = true
