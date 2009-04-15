@@ -18,4 +18,5 @@
     
     <Include file="localization\load.xml" />
     <Script file="OneBag3.lua" /> 
+
 </Ui>

@@ -16,7 +16,6 @@ Also in the vein of earlier iterations I've kept to the philosophy of doing as l
 * Clean and powerful graphical configuration                                                                 
 
 ===Future Plans
-* Reintroduce missing features that existed in OB2
 * Reintroduce the plugin system from earlier in this beta.  I had to remove it due to architectural issues.
 * Release OneRing3, OneView3, and OneVault3
 
