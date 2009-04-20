@@ -40,6 +40,7 @@ function OneBag3:OnInitialize()
 		self:RegisterEvent("BAG_UPDATE", UpdateBag)
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
+		self:RegisterEvent("ITEM_LOCK_CHANGED", "UpdateItemLock")
 		
 		self.frame.name:SetText(L["%s's Bags"]:format(UnitName("player")))
 		
