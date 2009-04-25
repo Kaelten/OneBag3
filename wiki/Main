@@ -34,7 +34,14 @@ Also in the vein of earlier iterations I've kept to the philosophy of doing as l
 ; OneView3
 : Coming Soon(tm)
 ; OneVault3
-: Coming Soon(tm)                                                 
+: Coming Soon(tm)              
+
+===Localization
+Localization is powered by WowAce's built in translation system.  Please use the following links to contribute to localization.
+* [[http://www.wowace.com/projects/OneCore/localization/|OneCore]]\\Currently needing - French, German, Latin American Spanish, Simplified Chinese, Spanish
+* [[http://www.wowace.com/projects/OneBag3/localization/|OneBag3]]\\Currently needing - French, Latin American Spanish, Simplified Chinese, Spanish
+* [[http://www.wowace.com/projects/OneBank3/localization/|OneBank3]]\\Currently needing - French, Latin American Spanish, Simplified Chinese, Spanish
+* [[http://www.wowace.com/projects/OneRing3/localization/|OneRing3]]\\Currently needing - French, Latin American Spanish, Russian, Simplified Chinese, Spanish
 
 ===Bug Reports & Suggestions
 Please report all bug reports to [[http://www.wowace.com/projects/OneBag3/tickets|my tracker on WowAce]].
