@@ -4,7 +4,6 @@ OneBag has a long history of minimalism and OneBag3 will continue to uphold the 
 
 Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 213 lines of code unique to OneBag3, and only 981 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries]].
 
-
 ===Features
 * Combines all of your bags into one.
 * Customizable number of columns
