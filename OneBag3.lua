@@ -110,6 +110,8 @@ function OneBag3:OnEnable()
     self:RawHook("ToggleBag", true)
     self:RawHook("ToggleBackpack", "ToggleBag", true)
     self:RawHook("ToggleAllBags", "ToggleBag", true)
+    self:RawHook("OpenBag", true)
+    self:RawHook("CloseBag", true)
 
 	local open = function()
 		self.wasOpened = self.isOpened
