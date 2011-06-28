@@ -114,7 +114,7 @@ function OneBag3:OnEnable()
     self:RawHook("CloseBag", true)
 
 	local open = function()
-		self.wasOpened = self.isOpened
+		self.wasOpened = self.isOpenedy
 		if not self.isOpened then
 			self:OpenBag()
 		end
