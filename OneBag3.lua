@@ -60,16 +60,8 @@ function OneBag3:OnInitialize()
 		self:CloseBag()
 	end)
 
-    local keyringButton = self:CreateKeyringButton(self.frame)
-    keyringButton:ClearAllPoints()
-    keyringButton:SetPoint("LEFT", self.frame.sidebarButton, "RIGHT", -1, -8)
-    keyringButton:SetScale(.85)
-    keyringButton:Show()
-
-    self.frame.keyringButton = keyringButton
-
     self.frame.name:ClearAllPoints()
-    self.frame.name:SetPoint("TOPLEFT", keyringButton, "TOPRIGHT", -4, -4)
+    self.frame.name:SetPoint("LEFT", self.frame.sidebarButton, "RIGHT", 0, 0)
 
 	self.sidebar = self:CreateSideBar("OneBagSideFrame", self.frame)
 	self.sidebar.handler = self
