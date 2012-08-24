@@ -91,7 +91,6 @@ function OneBag3:OnInitialize()
 	self:InitializeConfiguration()
 --	self:EnablePlugins()
 --	self:OpenConfig()
-
 end
 
 --- Sets up hooks and registers events
@@ -106,7 +105,7 @@ function OneBag3:OnEnable()
     self:RawHook("CloseBag", true)
 
 	local open = function()
-		self.wasOpened = self.isOpenedy
+		self.wasOpened = self.isOpened
 		if not self.isOpened then
 			self:OpenBag()
 		end
