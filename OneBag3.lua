@@ -40,7 +40,18 @@ function OneBag3:OnInitialize()
 
 		self:RegisterEvent("BAG_UPDATE", UpdateBag)
 		self:RegisterEvent("BAG_UPDATE_COOLDOWN", UpdateBag)
+		self:RegisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED", UpdateBag)
+
+		self:RegisterEvent("BAG_NEW_ITEMS_UPDATED", "UpdateFrame")
 		self:RegisterEvent("UPDATE_INVENTORY_ALERTS", "UpdateFrame")
+		self:RegisterEvent("QUEST_ACCEPTED", "UpdateFrame")
+
+		self:RegisterEvent("UNIT_QUEST_LOG_CHANGED", function(event, unit)
+			if unit == "player" then
+				self:UpdateFrame()
+			end
+		end)
+
 		self:RegisterEvent("ITEM_LOCK_CHANGED", "UpdateItemLock")
 
 		self.frame.name:SetText(L["%s's Bags"]:format(UnitName("player")))
@@ -53,7 +64,12 @@ function OneBag3:OnInitialize()
 	self.frame:SetScript("OnHide", function()
 		self:UnregisterEvent("BAG_UPDATE")
 		self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
+		self:UnregisterEvent("BANK_BAG_SLOT_FLAGS_UPDATED")
+
+		self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
 		self:UnregisterEvent("UPDATE_INVENTORY_ALERTS")
+		self:UnregisterEvent("QUEST_ACCEPTED")
+		self:UnregisterEvent("UNIT_QUEST_LOG_CHANGED")
 		self:UnregisterEvent("ITEM_LOCK_CHANGED")
 
 		self.sidebar:Hide()
