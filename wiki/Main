@@ -1,14 +1,6 @@
-===The Future is coming!
-
-**OneBag4** is in development!  I'm actually going through and reimagining everything.  I'm going to do my best to keep it feeling minimal, but I'm no longer going to sacrifice features for that goal.
-
-[[http://www.wowace.com/addons/OneBag4|Check it out here!]]
-
-==OneBag3
-
 **OneBag3** is part of a long line of bag replacements for the default game bags that will combine all of your bags into one frame.
 
-OneBag has a long history of minimalism and OneBag3 will continue to uphold the standard of easy of use and simplicity it's predecessors set.  Like the earlier versions, OneBag3 will continue to offer powerful options for those who wish to delve a little deeper.  
+OneBag has a long history of minimalism and OneBag3 will continue to uphold the standard of easy of use and simplicity it's predecessors set.  Like the earlier versions, OneBag3 will continue to offer powerful options for those who wish to delve a little deeper.
 
 Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 213 lines of code unique to OneBag3, and only 981 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries]].
 
@@ -21,15 +13,16 @@ Also in the vein of earlier iterations I've kept to the philosophy of doing as l
 * Allows only certain bags to be displayed, either by slot or type
 * Custom bag bar which will highlight it's associated slots on mouseover.  This highlighting can be locked in place by clicking.
 * Customizable scale, background color, alpha, and more.
-* Clean and powerful graphical configuration                                                                 
+* Clean and powerful graphical configuration
+* Exposes WoW's built in bag sorting
 
 ===The Family
 ; OneCore
 : The brains and the brawn of the outfit, Core does all the heavy lifting both logic and layout wise.  This is embedded in OneBag by default, and you shouldn't need to worry about installing it unless you're running no-lib builds.
 : [[http://www.wowace.com/projects/OneCore|On WowAce]]
 : [[http://www.curse.com/addons/wow/onecore|On Curse]]
-; OneBank3 
-: OneBag's brother who always like the safety of town, Bank does pretty much the exact same job for your bankslots as OneBag does for your character's bags.  
+; OneBank3
+: OneBag's brother who always like the safety of town, Bank does pretty much the exact same job for your bankslots as OneBag does for your character's bags.
 : [[http://www.wowace.com/projects/OneBank3|On WowAce]]
 : [[http://www.curse.com/addons/wow/onebank3|On Curse]]
 
@@ -39,3 +32,7 @@ Localization is powered by WowAce's built in translation system.  Please use the
 * [[http://www.wowace.com/projects/OneBag3/localization/|OneBag3]]
 * [[http://www.wowace.com/projects/OneBank3/localization/|OneBank3]]
 
+===Bug Reports & Suggestions
+Please report all bug reports to [[http://www.wowace.com/projects/OneBag3/tickets|my tracker on WowAce]].
+
+I want to thank all the users who've been using OneBag and OneBank for so long.
