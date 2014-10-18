@@ -238,6 +238,12 @@ function OneBag3:CloseBag(bagid)
 	self.isOpened = false
 end
 
+
+--- Handles Bag Sorting
+function OneBag3:SortBags()
+	SortBags()
+end
+
 -- Custom button getters
 
 --- Creates the backpack button, which differs signifcantly from the other bag buttons
