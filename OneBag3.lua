@@ -16,6 +16,7 @@ function OneBag3:OnInitialize()
 
 	self.frame = self:CreateMainFrame("OneBagFrame")
 	self.frame.handler = self
+	self:UpdateFrameHeader()
 
 	self.frame:ClearAllPoints()
 	self.frame:SetPosition(self.db.profile.position)
