@@ -97,7 +97,9 @@ function OneBag3:OnInitialize()
 			for bag=0, 3 do
 				local button = self:CreateBagButton(bag, self.sidebar)
 				button:ClearAllPoints()
-				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
+-- 				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
+
+                button:SetPoint("TOP", self.sidebar.buttons[bag-1], "BOTTOM", 0, -2)
 
 				self.sidebar.buttons[bag] = button
 			end
@@ -106,8 +108,8 @@ function OneBag3:OnInitialize()
 
 	self.sidebar:Hide()
 	self:InitializeConfiguration()
-	
-	
+
+
 --	self:EnablePlugins()
 --	self:OpenConfig()
 end
@@ -146,8 +148,11 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("MERCHANT_CLOSED", 		close)
 	self:RegisterEvent("TRADE_SHOW", 			open)
 	self:RegisterEvent("TRADE_CLOSED", 			close)
-	self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
-	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
+
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+        self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
+        self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
+	end
 end
 
 --- Provides the custom config options for OneConfig
@@ -249,15 +254,17 @@ end
 
 -- Custom button getters
 
---- Creates the backpack button, which differs signifcantly from the other bag buttons
+--- Creates the backpack button, which differs significantly from the other bag buttons
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBackpackButton(parent)
-	local button = CreateFrame("ItemButton", "OBSideBarBackpackButton", parent, "ItemAnimTemplate")
+    local frameType = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemButton" or "Button"
+    local template = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemAnimTemplate" or "ItemButtonTemplate"
+	local button = CreateFrame(frameType, "OBSideBarBackpackButton", parent, template)
 	local highlight = self:CreateButtonHighlight(button)
 
 	button:SetID(0)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	OBSideBarBackpackButtonIconTexture:SetTexture("Interface\\Buttons\\Button-Backpack-Up")
+	SetItemButtonTexture(button ,"Interface\\Buttons\\Button-Backpack-Up")
 
 	button:SetScript("OnEnter", function()
 		self:HighlightBagSlots(0)
@@ -277,7 +284,7 @@ function OneBag3:CreateBackpackButton(parent)
 		if not self.frame.bags[0].checked then
 			self:UnhighlightBagSlots(0)
 			highlight:Hide()
-			
+
 			self.frame.bags[0].colorLocked = false
 		else
 			self.frame.bags[0].colorLocked = true
@@ -285,11 +292,11 @@ function OneBag3:CreateBackpackButton(parent)
 		GameTooltip:Hide()
 	end)
 
-	button:SetScript("OnReceiveDrag", function(event, btn) 
-		BackpackButton_OnClick(button, btn) 
+	button:SetScript("OnReceiveDrag", function(event, btn)
+		BackpackButton_OnClick(button, btn)
 	end)
 
-	button:SetScript("OnClick", function(button) 
+	button:SetScript("OnClick", function(button)
 		if ( not PutItemInBackpack() ) then
 			self.frame.bags[0].checked = not self.frame.bags[0].checked
 		end
@@ -302,10 +309,13 @@ end
 -- @param bagid the numeric id of the bag being checked
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
-	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')
+    local frameType = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemButton" or "CheckButton"
+	local button = CreateFrame(frameType, "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')
 	local highlight = self:CreateButtonHighlight(button)
 
-	button:SetScale(1.27)
+    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	    button:SetScale(1.27)
+    end
 
 	self:SecureHookScript(button, "OnEnter", function(button)
 		self:HighlightBagSlots(button:GetID()-19)
