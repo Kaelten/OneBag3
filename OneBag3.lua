@@ -3,6 +3,10 @@ local OneBag3 = LibStub('AceAddon-3.0'):NewAddon('OneBag3', 'OneCore-1.0', 'OneF
 local AceDB3 = LibStub('AceDB-3.0')
 local L = LibStub("AceLocale-3.0"):GetLocale("OneBag3")
 
+OneBag3.IsRetail = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE
+OneBag3.IsClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
+OneBag3.IsBC = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+
 OneBag3:InitializePluginSystem()
 
 --- Handles the do once configuration, including db, frames and configuration
@@ -149,7 +153,7 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("TRADE_SHOW", 			open)
 	self:RegisterEvent("TRADE_CLOSED", 			close)
 
-	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+	if self.IsRetail then
         self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
         self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
 	end
@@ -257,8 +261,8 @@ end
 --- Creates the backpack button, which differs significantly from the other bag buttons
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBackpackButton(parent)
-    local frameType = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemButton" or "Button"
-    local template = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemAnimTemplate" or "ItemButtonTemplate"
+    local frameType = self.IsRetail and "ItemButton" or "Button"
+    local template = self.IsRetail and "ItemAnimTemplate" or "ItemButtonTemplate"
 	local button = CreateFrame(frameType, "OBSideBarBackpackButton", parent, template)
 	local highlight = self:CreateButtonHighlight(button)
 
@@ -309,11 +313,11 @@ end
 -- @param bagid the numeric id of the bag being checked
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
-    local frameType = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "ItemButton" or "CheckButton"
+    local frameType = self.IsRetail and "ItemButton" or "CheckButton"
 	local button = CreateFrame(frameType, "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')
 	local highlight = self:CreateButtonHighlight(button)
 
-    if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    if self.IsRetail then
 	    button:SetScale(1.27)
     end
 
