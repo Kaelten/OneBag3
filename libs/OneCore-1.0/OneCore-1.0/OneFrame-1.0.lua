@@ -192,7 +192,7 @@ end
 -- @param width the width of the frame, defaults to 60
 -- @param height the height of the frame, defaults to 223
 function OneFrame:CreateSideBar(framename, parent, width, height)
-    local sidebar = self:CreateBaseFrame(framename, width or 60, height or 223)
+    local sidebar = self:CreateBaseFrame(framename, width or 60, height or 265)
 
 	sidebar:SetPosition({ parent=parent, attachAt="TOPRIGHT", attachTo="TOPLEFT" })
 

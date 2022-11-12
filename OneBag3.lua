@@ -12,7 +12,7 @@ function OneBag3:OnInitialize()
 
 	self.displayName = "OneBag3"
 
-	self.bagIndexes = {0, 1, 2, 3, 4}
+	self.bagIndexes = {0, 1, 2, 3, 4, 5}
 
 	self.frame = self:CreateMainFrame("OneBagFrame")
 	self.frame.handler = self
@@ -94,8 +94,8 @@ function OneBag3:OnInitialize()
 			button:SetPoint("TOP", self.sidebar, "TOP", 0, -30)
 
 			self.sidebar.buttons[-1] = button
-			for bag=0, 3 do
-				local button = self:CreateBagButton(bag, self.sidebar)
+			for bag=0, 4 do
+				local button = self:CreateBagButton(bag + 1, self.sidebar)
 				button:ClearAllPoints()
 				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
 
@@ -103,7 +103,11 @@ function OneBag3:OnInitialize()
 			end
 		end
 	end)
-
+	
+	self.sidebar:SetScript("OnUpdate", function() -- Set the Reagent bag border everyframe due to BaseBagSlotButtonTemplate resetting it using the normal bag border instead of the raegent one
+		local btn = self.sidebar.buttons[4]
+		btn:SetNormalTexture('bag-reagent-border')
+	end)
 	self.sidebar:Hide()
 	self:InitializeConfiguration()
 	
@@ -167,6 +171,7 @@ function OneBag3:LoadCustomConfig(baseconfig)
 		[2] = 'Second Bag',
 		[3] = 'Third Bag',
 		[4] = 'Fourth Bag',
+		[5] = 'Ragent Bag',
 	}
 
 	-- this gets localized kinda oddly, should let both the desc and name localized seperately
@@ -197,7 +202,7 @@ function OneBag3:CloseAllBags() self:CloseBag() end
 --- A replacement for the IsBagOpen function that provides valid results when using OneBag
 -- @param bagid the numeric id of the bag being checked
 function OneBag3:IsBagOpen(bagid)
-	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+	if type(bagid) == "number" and (bagid < 0 or bagid > 5) then
 		return
 	end
 
@@ -207,7 +212,7 @@ end
 --- Toggles the visibility of the bag frame
 -- @param bagid the numeric id of the bag being checked
 function OneBag3:ToggleBag(bagid)
-	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+	if type(bagid) == "number" and (bagid < 0 or bagid > 5) then
 		return self.hooks.ToggleBag(bagid)
 	end
 
@@ -221,7 +226,7 @@ end
 --- Shows the bag frame
 -- @param bagid the numeric id of the bag being checked
 function OneBag3:OpenBag(bagid)
-	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+	if type(bagid) == "number" and (bagid < 0 or bagid > 5) then
 		return self.hooks.OpenBag(bagid)
 	end
 
@@ -233,7 +238,7 @@ end
 --- Hides the bag frame
 -- @param bagid the numeric id of the bag being checked
 function OneBag3:CloseBag(bagid)
-	if type(bagid) == "number" and (bagid < 0 or bagid > 4) then
+	if type(bagid) == "number" and (bagid < 0 or bagid > 5) then
 		return self.hooks.CloseBag(bagid)
 	end
 
@@ -303,19 +308,25 @@ end
 -- @param bagid the numeric id of the bag being checked
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
-	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
+	local button
+	if (bag == 5) then -- Reagent Bag
+		button = CreateFrame("ItemButton", "OBSideBarREAGENTBAG0SLOT", parent, 'BaseBagSlotButtonTemplate')
+		button.commandName =  "TOGGLEREAGENTBAG1"
+	else
+		button = CreateFrame("ItemButton", "OBSideBarBag"..(bag - 1).."Slot", parent, 'BaseBagSlotButtonTemplate')
+		button.commandName =  "TOGGLEBAG"..bag
+	end
+
 	local highlight = self:CreateButtonHighlight(button)
 	button:SetScale(1.27)
-	-- Allow GameTooltip to display without causing an error 
-	button.commandName =  "TOGGLEBAG"..bag+1
 	
 	button:SetScript("OnEnter", function(button)
-		self:HighlightBagSlots(bag + 1)
+		self:HighlightBagSlots(bag)
 		highlight:Show()
 		if not KeybindFrames_InQuickKeybindMode() then
 			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 			if (GameTooltip:SetInventoryItem("player", button:GetID())) then
-				local keyBinding = GetBindingKey("TOGGLEBAG"..bag+1)
+				local keyBinding = GetBindingKey("TOGGLEBAG"..bag)
 				if ( keyBinding ) then
 					GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..keyBinding..")"..FONT_COLOR_CODE_CLOSE)
 				end
@@ -330,22 +341,21 @@ function OneBag3:CreateBagButton(bag, parent)
 	end)
 
 	button:SetScript("OnLeave", function(button)
-		local index = bag + 1
-		if not self.frame.bags[bag + 1].checked then
-			self:UnhighlightBagSlots(bag + 1)
+		local index = bag
+		if not self.frame.bags[bag].checked then
+			self:UnhighlightBagSlots(bag)
 			highlight:Hide()
-			self.frame.bags[bag + 1].colorLocked = false
+			self.frame.bags[bag].colorLocked = false
 		else
-			self.frame.bags[bag + 1].colorLocked = true
+			self.frame.bags[bag].colorLocked = true
 		end
 		GameTooltip:Hide()
 	end)
 
 	button:SetScript("OnClick", function(button)
 		local haditem = PutItemInBag(bag)
-
 		if not haditem then
-			local index = bag + 1
+			local index = bag
 			self.frame.bags[index].checked = not self.frame.bags[index].checked
 		end
 	end)
@@ -356,4 +366,3 @@ function OneBag3:CreateBagButton(bag, parent)
 
 	return button
 end
-

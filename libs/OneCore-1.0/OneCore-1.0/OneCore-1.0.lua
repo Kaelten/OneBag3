@@ -165,6 +165,7 @@ function OneCore:BuildFrame()
 			self.frame.bags[bag].size = size
 			self.doOrganization = true
 		end
+	
 
 		for slot = 1, size do
 			local slotkey = ('%s:%s'):format(bag, slot)
@@ -228,7 +229,6 @@ function OneCore:UpdateBag(bag)
 	if not self.frame.bags then
 		return
 	end
-
 	self:BuildFrame()
 	self:OrganizeFrame()
 
@@ -253,7 +253,6 @@ function OneCore:UpdateBag(bag)
 			--ContainerFrameMixin:UpdateCooldowns()
     	end
     end
-
     for slot=1, self.frame.bags[bag].size do
         local slot = self:GetSlot(bag, slot)
 		local bag = slot:GetParent()
@@ -362,7 +361,7 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 
 	local bcolor
 	if not fcolor and bag.type then
-		if bag:IsProfessionBag() then
+		if ((bag:IsProfessionBag()) or (bag:GetID() == 5)) then
 			bcolor = self.db.profile.colors.profession
 		end
 
