@@ -150,7 +150,7 @@ end
 function OneCore:BuildFrame()
 	for _, bag in pairs(self.bagIndexes) do
 		local size = OneCore:GetContainerNumSlots(bag);
-		local bagType = select(2, GetContainerNumFreeSlots(bag))
+		local bagType = select(2, C_Container.GetContainerNumFreeSlots(bag))
 
 		if not self.frame.bags then
 			self.frame.bags = {}
@@ -263,34 +263,39 @@ function OneCore:UpdateBag(bag)
 
 		]]
 		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
-		slot.BattlepayItemTexture:Hide()
-		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
-		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID()) or IsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
-		if icon then
-			slot:SetItemButtonTexture(icon)
-			slot:SetItemButtonCount(itemCount)
+		if (slot.BattlepayItemTexture) then
+			slot.BattlepayItemTexture:Hide()
+		end	
+
+		local containerInfo = C_Container.GetContainerItemInfo(bag:GetID(), slot:GetID())
+		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
+		if containerInfo then
+			slot:SetItemButtonTexture(containerInfo.iconFileID)
+			slot:SetItemButtonCount(containerInfo.stackCount)
 			-- Add Pawn Support
 			if (itemIsUpgrade) then
 				slot.UpgradeIcon:Show()
 			end
 			-- Bandaid cooldown fix start
 			local cooldown = _G[slot:GetName().."Cooldown"]
-			local start, duration, enable = GetContainerItemCooldown(bag:GetID(), slot:GetID())
+			local start, duration, enable = C_Container.GetContainerItemCooldown(bag:GetID(), slot:GetID())
 			CooldownFrame_Set(cooldown, start, duration, enable);
 			if ( duration > 0 and enable == 0 ) then
 				SetItemButtonTextureVertexColor(slot, 0.4, 0.4, 0.4);
 			else
 				SetItemButtonTextureVertexColor(slot, 1, 1, 1);
 			end
-			SetItemButtonDesaturated(slot, false, 0.5, 0.5); -- Fix for 10.0
+			SetItemButtonDesaturated(slot, false, 0.5, 0.5)
 			-- Bandaid cooldown fix stop
 		else
-			slot.UpgradeIcon:Hide()
+			if(slot.UpgradeIcon) then
+				slot.UpgradeIcon:Hide()
+			end
 			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
 			_G[slot:GetName().."Cooldown"]:Hide()
-			SetItemButtonDesaturated(slot, false, 0.5, 0.5);
+			SetItemButtonDesaturated(slot, false, 0.5, 0.5)
 		end
         self:ColorSlotBorder(slot)
         self:ApplySearchFilter(slot)
@@ -365,7 +370,7 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 	end
 
 	if self.db.profile.appearance.rarity and not fcolor and not bcolor then
-		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
+		local link = C_Container.GetContainerItemLink(bag:GetID(), slot:GetID())
 		if link then
 			local rarity = select(3, GetItemInfo(link))
 			if rarity and (rarity > 1 or self.db.profile.appearance.lowlevel) then
@@ -433,7 +438,7 @@ end
 
 function OneCore:ApplySearchFilter(slot)
     if self.searchTerm and #self.searchTerm > 1 then
-        local link = GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
+        local link = C_Container.GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
         if not link or SearchEngine:Matches(link, self.searchTerm) then
             slot.searchOverlay:Hide()
         else
@@ -463,7 +468,7 @@ end
 
 --- Replacement for GetContainerNumSlots
 function OneCore:GetContainerNumSlots(bagId)
-    return _G.GetContainerNumSlots(bagId)
+    return _G.C_Container.GetContainerNumSlots(bagId)
 end
 
 --- Updates a slot's locked status.
@@ -475,8 +480,8 @@ function OneCore:UpdateItemLock(event, bagid, slotid)
         return
     end
 
-    local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bagid, slotid);
-    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), locked, 0.5, 0.5, 0.5);
+    --local texture, itemCount, locked, quality, readable = C_Container.GetContainerItemInfo(bagid, slotid); Seems to be bugged as of 10.0.2 Beta Build 46619
+    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), true, 0.5, 0.5, 0.5);
 end
 
 -- slight bastardization of the embed system, using this to setup a lot of static values on the object.

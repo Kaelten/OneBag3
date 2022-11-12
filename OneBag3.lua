@@ -304,13 +304,14 @@ end
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
 	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
-
+	local highlight = self:CreateButtonHighlight(button)
 	button:SetScale(1.27)
 	-- Allow GameTooltip to display without causing an error 
 	button.commandName =  "TOGGLEBAG"..bag+1
 	
 	button:SetScript("OnEnter", function(button)
 		self:HighlightBagSlots(bag + 1)
+		highlight:Show()
 		if not KeybindFrames_InQuickKeybindMode() then
 			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 			if (GameTooltip:SetInventoryItem("player", button:GetID())) then
@@ -329,10 +330,10 @@ function OneBag3:CreateBagButton(bag, parent)
 	end)
 
 	button:SetScript("OnLeave", function(button)
-		local index = button:GetID() - 19
+		local index = bag + 1
 		if not self.frame.bags[bag + 1].checked then
 			self:UnhighlightBagSlots(bag + 1)
---			highlight:Hide()
+			highlight:Hide()
 			self.frame.bags[bag + 1].colorLocked = false
 		else
 			self.frame.bags[bag + 1].colorLocked = true
@@ -341,10 +342,10 @@ function OneBag3:CreateBagButton(bag, parent)
 	end)
 
 	button:SetScript("OnClick", function(button)
-		local haditem = PutItemInBag(button:GetID())
+		local haditem = PutItemInBag(bag)
 
 		if not haditem then
-			local index = button:GetID() - 19
+			local index = bag + 1
 			self.frame.bags[index].checked = not self.frame.bags[index].checked
 		end
 	end)

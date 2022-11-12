@@ -8,8 +8,8 @@
 ## X-eMail: kaelten@gmail.com
 ## X-Category: Bags & Inventory
 ## X-Website: http://www.wowace.com/projects/OneBag3/
-## X-Date: @project-timestamp@
-## Version: @project-version@
+## X-Date: 1621450206
+## Version: v3.12.1
 ## SavedVariables: OneBag3DB
 ## OptionalDeps: Ace3, OneCore
 
