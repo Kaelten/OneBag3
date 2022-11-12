@@ -326,7 +326,7 @@ function OneBag3:CreateBagButton(bag, parent)
 		if not KeybindFrames_InQuickKeybindMode() then
 			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 			if (GameTooltip:SetInventoryItem("player", button:GetID())) then
-				local keyBinding = (bag == 5) and GetBindingKey("TOGGLEREAGENTBAG1") or GetBindingKey("TOGGLEBAG"..bag);
+				local keyBinding = (bag == 5) and GetBindingKey("TOGGLEREAGENTBAG1") or GetBindingKey("TOGGLEBAG"..bag)
 				if ( keyBinding ) then
 					GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..keyBinding..")"..FONT_COLOR_CODE_CLOSE)
 				end
