@@ -14,6 +14,6 @@ L["Toggles the display of your First Bag."] = "Affiche ou non votre premier sac.
 L["Toggles the display of your Fourth Bag."] = "Affiche ou non votre quatrième sac."
 L["Toggles the display of your Second Bag."] = "Affiche ou non votre deuxième sac."
 L["Toggles the display of your Third Bag."] = "Affiche ou non votre troisième sac."
-
+L["Ragent Bag"] = "Sac de composant"
     --@end-non-debug@
 end
