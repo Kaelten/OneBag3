@@ -263,9 +263,11 @@ function OneFrame:CreateMainFrame(framename, moneyType)
 	sidebarButton:SetScript("OnClick", function()
 		if sidebarButton:GetChecked() then
 			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
+            SetCVar("expandBagBar", true)
 			frame.sidebar:Show()
 		else
 			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
+            SetCVar("expandBagBar", false)
 			frame.sidebar:Hide()
 		end
 	end)
