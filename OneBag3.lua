@@ -3,10 +3,6 @@ local OneBag3 = LibStub('AceAddon-3.0'):NewAddon('OneBag3', 'OneCore-1.0', 'OneF
 local AceDB3 = LibStub('AceDB-3.0')
 local L = LibStub("AceLocale-3.0"):GetLocale("OneBag3")
 
-OneBag3.IsRetail = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE
-OneBag3.IsClassic = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC
-OneBag3.IsBC = _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC
-
 OneBag3:InitializePluginSystem()
 
 --- Handles the do once configuration, including db, frames and configuration
@@ -95,15 +91,13 @@ function OneBag3:OnInitialize()
 			self.sidebar.buttons = {}
 			local button = self:CreateBackpackButton(self.sidebar)
 			button:ClearAllPoints()
-			button:SetPoint("TOP", self.sidebar, "TOP", 0, -15)
+			button:SetPoint("TOP", self.sidebar, "TOP", 0, -30)
 
 			self.sidebar.buttons[-1] = button
 			for bag=0, 3 do
 				local button = self:CreateBagButton(bag, self.sidebar)
 				button:ClearAllPoints()
--- 				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
-
-                button:SetPoint("TOP", self.sidebar.buttons[bag-1], "BOTTOM", 0, -2)
+				button:SetPoint("TOP", self.sidebar, "TOP", 0, (bag + 1) * -31 - 10)
 
 				self.sidebar.buttons[bag] = button
 			end
@@ -112,8 +106,8 @@ function OneBag3:OnInitialize()
 
 	self.sidebar:Hide()
 	self:InitializeConfiguration()
-
-
+	
+	
 --	self:EnablePlugins()
 --	self:OpenConfig()
 end
@@ -152,11 +146,8 @@ function OneBag3:OnEnable()
 	self:RegisterEvent("MERCHANT_CLOSED", 		close)
 	self:RegisterEvent("TRADE_SHOW", 			open)
 	self:RegisterEvent("TRADE_CLOSED", 			close)
-
-	if self.IsRetail then
-        self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
-        self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
-	end
+	self:RegisterEvent("GUILDBANKFRAME_OPENED", open)
+	self:RegisterEvent("GUILDBANKFRAME_CLOSED", close)
 end
 
 --- Provides the custom config options for OneConfig
@@ -258,21 +249,20 @@ end
 
 -- Custom button getters
 
---- Creates the backpack button, which differs significantly from the other bag buttons
+--- Creates the backpack button, which differs signifcantly from the other bag buttons
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBackpackButton(parent)
-    local frameType = self.IsRetail and "ItemButton" or "Button"
-    local template = self.IsRetail and "ItemAnimTemplate" or "ItemButtonTemplate"
-	local button = CreateFrame(frameType, "OBSideBarBackpackButton", parent, template)
-	local highlight = self:CreateButtonHighlight(button)
+	local button = CreateFrame("ItemButton", "OBSideBarBackpackButton", parent, "CircularItemButtonTemplate")
+
+	button:SetScale(0.60)
+
+	OBSideBarBackpackButtonNormalTexture:SetAtlas("bag-main");
 
 	button:SetID(0)
 	button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-	SetItemButtonTexture(button ,"Interface\\Buttons\\Button-Backpack-Up")
 
 	button:SetScript("OnEnter", function()
 		self:HighlightBagSlots(0)
-		highlight:Show()
 
 		GameTooltip:SetOwner(button, "ANCHOR_LEFT")
 		GameTooltip:SetText(BACKPACK_TOOLTIP, 1.0, 1.0, 1.0)
@@ -287,8 +277,7 @@ function OneBag3:CreateBackpackButton(parent)
 	button:SetScript("OnLeave", function(button)
 		if not self.frame.bags[0].checked then
 			self:UnhighlightBagSlots(0)
-			highlight:Hide()
-
+			
 			self.frame.bags[0].colorLocked = false
 		else
 			self.frame.bags[0].colorLocked = true
@@ -296,11 +285,12 @@ function OneBag3:CreateBackpackButton(parent)
 		GameTooltip:Hide()
 	end)
 
-	button:SetScript("OnReceiveDrag", function(event, btn)
-		BackpackButton_OnClick(button, btn)
+	--[[
+	button:SetScript("OnReceiveDrag", function(event, btn) 
+		BackpackOnEvent(button, btn) 
 	end)
-
-	button:SetScript("OnClick", function(button)
+	]]
+	button:SetScript("OnClick", function(button) 
 		if ( not PutItemInBackpack() ) then
 			self.frame.bags[0].checked = not self.frame.bags[0].checked
 		end
@@ -313,27 +303,39 @@ end
 -- @param bagid the numeric id of the bag being checked
 -- @param parent the parent frame which the button will be attached to.
 function OneBag3:CreateBagButton(bag, parent)
-    local frameType = self.IsRetail and "ItemButton" or "CheckButton"
-	local button = CreateFrame(frameType, "OBSideBarBag"..bag.."Slot", parent, 'BagSlotButtonTemplate')
-	local highlight = self:CreateButtonHighlight(button)
+	local button = CreateFrame("ItemButton", "OBSideBarBag"..bag.."Slot", parent, 'BaseBagSlotButtonTemplate')
 
-    if self.IsRetail then
-	    button:SetScale(1.27)
-    end
+	button:SetScale(1.27)
+	-- Allow GameTooltip to display without causing an error 
+	button.commandName =  "TOGGLEBAG"..bag+1
+	
+	button:SetScript("OnEnter", function(button)
+		self:HighlightBagSlots(bag + 1)
+		if not KeybindFrames_InQuickKeybindMode() then
+			GameTooltip:SetOwner(button, "ANCHOR_LEFT")
+			if (GameTooltip:SetInventoryItem("player", button:GetID())) then
+				local keyBinding = GetBindingKey("TOGGLEBAG"..bag+1)
+				if ( keyBinding ) then
+					GameTooltip:AppendText(" "..NORMAL_FONT_COLOR_CODE.."("..keyBinding..")"..FONT_COLOR_CODE_CLOSE)
+				end
+			else 
+				local title = ContainerFrame_IsReagentBag(button:GetBagID()) and EQUIP_CONTAINER_REAGENT or EQUIP_CONTAINER;
+				GameTooltip:SetOwner(button, "ANCHOR_LEFT");
+				GameTooltip_SetTitle(GameTooltip, title);
+			end
+			GameTooltip:Show()
+		end
 
-	self:SecureHookScript(button, "OnEnter", function(button)
-		self:HighlightBagSlots(button:GetID()-19)
-		highlight:Show()
 	end)
 
 	button:SetScript("OnLeave", function(button)
 		local index = button:GetID() - 19
-		if not self.frame.bags[index].checked then
-			self:UnhighlightBagSlots(index)
-			highlight:Hide()
-			self.frame.bags[index].colorLocked = false
+		if not self.frame.bags[bag + 1].checked then
+			self:UnhighlightBagSlots(bag + 1)
+--			highlight:Hide()
+			self.frame.bags[bag + 1].colorLocked = false
 		else
-			self.frame.bags[index].colorLocked = true
+			self.frame.bags[bag + 1].colorLocked = true
 		end
 		GameTooltip:Hide()
 	end)
