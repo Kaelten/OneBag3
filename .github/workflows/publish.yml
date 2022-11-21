@@ -1,0 +1,32 @@
+name: Package and Publish Addon
+
+on:
+  push:
+    branches: [main]
+    tags: ["*"]
+
+jobs:
+  check-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: clone project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # gets entire git history, needed for automatic changelogs
+
+      - name: luacheck
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
+          annotate: warning
+
+      - name: download latest onecore
+        run: .scripts/download-latest-onecore
+
+      - name: package and deploy
+        uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          # WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }} # don't upload onecore to wowi

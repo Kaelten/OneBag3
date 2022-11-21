@@ -2,9 +2,9 @@
 
 OneBag has a long history of minimalism and OneBag3 will continue to uphold the standard of easy of use and simplicity it's predecessors set.  Like the earlier versions, OneBag3 will continue to offer powerful options for those who wish to delve a little deeper.
 
-Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 268 lines of code unique to OneBag3, and only 1804 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [[http://www.wowace.com/projects/Ace3|Ace3 libraries]].
+Also in the vein of earlier iterations I've kept to the philosophy of doing as little work as possible, as a result the code base is very small, and most of it is in the OneCore library.  As of the time of writing there are only 268 lines of code unique to OneBag3, and only 1804 lines of code in OneCore itself.  LoC is a horrible stat in general, but it's fun none the less, and I cheat horribly since I build off the powerful [Ace3 libraries][8].
 
-===Features
+## Features
 * **Now with Search**
 * Combines all of your bags into one.
 * Customizable number of columns
@@ -17,9 +17,9 @@ Also in the vein of earlier iterations I've kept to the philosophy of doing as l
 * Clean and powerful graphical configuration
 * Exposes WoW's built in bag sorting
 
-===Search Syntax
+## Search Syntax
 
-Search inside of OneBag3 is powered by the [[https://github.com/Jaliborc/LibItemSearch-1.2|LibItemSearch library by Jalibroc]].  As a result it supports many advanced search options.
+Search inside of OneBag3 is powered by the [LibItemSearch library by Jalibroc][7].  As a result it supports many advanced search options.
 
 **Advanced Filters**:
 
@@ -48,23 +48,35 @@ Search inside of OneBag3 is powered by the [[https://github.com/Jaliborc/LibItem
 * **boa** - Bind on account items.
 * **quest** - Quest bound items.
 
-===The Family
-; OneCore
-: The brains and the brawn of the outfit, Core does all the heavy lifting both logic and layout wise.  This is embedded in OneBag by default, and you shouldn't need to worry about installing it unless you're running no-lib builds.
-: [[http://www.wowace.com/projects/OneCore|On WowAce]]
-: [[http://www.curse.com/addons/wow/onecore|On Curse]]
-; OneBank3
-: OneBag's brother who always like the safety of town, Bank does pretty much the exact same job for your bankslots as OneBag does for your character's bags.
-: [[http://www.wowace.com/projects/OneBank3|On WowAce]]
-: [[http://www.curse.com/addons/wow/onebank3|On Curse]]
+## Welcome to the Family
+### [OneCore][4]
+The brains and the brawn of the outfit, Core does all the heavy lifting both logic and layout wise.  This is embedded in OneBag by default, and you shouldn't need to worry about installing it unless you're running no-lib builds.
 
-===Localization
-Localization is powered by WowAce's built in translation system.  Please use the following links to contribute to localization.
-* [[http://www.wowace.com/projects/OneCore/localization/|OneCore]]
-* [[http://www.wowace.com/projects/OneBag3/localization/|OneBag3]]
-* [[http://www.wowace.com/projects/OneBank3/localization/|OneBank3]]
+### [OneBank3][6]
+OneBag's brother who always like the safety of town, Bank does pretty much the exact same job for your bank slots as OneBag does for your character's bags.
 
-===Bug Reports & Suggestions
-Please report all bug reports to [[http://www.wowace.com/projects/OneBag3/tickets|my tracker on WowAce]].
+
+## Localization
+Localization is powered by WowAce's translation system. Please use the following links
+to contribute to localization.  As of writing, this table shows the most recent status  
+for the OneBag3 Suite.
+
+|       Project | deDE  | esES | esMX | frFR | itIT | koKR | ptBR | ruRU | zhCN | zhTW |
+|--------------:|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|  [OneCore][1] | 14 NR | 100% | 5 NR | 100% |  0%  | 100% |  0%  | 100% | 100% | 100% |
+|  [OneBag3][2] | 100%  | 100% | 100% | 100% | 4 NR | 100% |  0%  | 100% | 100% | 100% |
+| [OneBank3][3] | 10 NR | 85%  | 85%  | 85%  | 90%  | 100% |  5%  | 3 NR | 100% | 100% |
+
 
 I want to thank all the users who've been using OneBag and OneBank for so long.
+
+[1]: https://www.wowace.com/projects/OneCore/localization/ "OneCore Localizations"
+[2]: https://www.wowace.com/projects/OneBag3/localization/ "OneBag3 Localizations"
+[3]: https://www.wowace.com/projects/OneBank3/localization/ "OneBank3 Localizations"
+
+[4]: https://github.com/Kaelten/OneCore
+[5]: https://github.com/Kaelten/OneBag3
+[6]: https://github.com/Kaelten/OneBank3
+
+[7]: https://github.com/Jaliborc/LibItemSearch-1.2
+[8]: http://www.wowace.com/projects/Ace3

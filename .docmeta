@@ -1,8 +1,0 @@
--
-    type: luadoc
-    input-files: "*.lua"
-    output-directory: API                                                  
--
-    type: creole
-    input-file: wiki/Main
-    output-page: "Main"
