@@ -202,7 +202,7 @@ Lib.Filters.tipPhrases = {
 		['boe'] = ITEM_BIND_ON_EQUIP,
 		['bou'] = ITEM_BIND_ON_USE,
 		['boa'] = ITEM_BIND_TO_BNETACCOUNT,
-		[GetItemClassInfo(LE_ITEM_CLASS_QUESTITEM):lower()] = ITEM_BIND_QUEST,
+		[C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower()] = ITEM_BIND_QUEST,
 		[QUESTS_LABEL:lower()] = ITEM_BIND_QUEST,
 		[TOY:lower()] = TOY,
 		[MINIMAP_TRACKING_VENDOR_REAGENT:lower()] = PROFESSIONS_USED_IN_COOKING,
@@ -218,7 +218,7 @@ Lib.Filters.tipPhrases = {
 
 --[[ Equipment Sets ]]--
 
-if IsAddOnLoaded('ItemRack') then
+if C_AddOns.IsAddOnLoaded('ItemRack') then
 	local sameID = ItemRack.SameID
 
 	function Lib:BelongsToSet(id, search)
@@ -233,7 +233,7 @@ if IsAddOnLoaded('ItemRack') then
 		end
 	end
 
-elseif IsAddOnLoaded('Wardrobe') then
+elseif C_AddOns.IsAddOnLoaded('Wardrobe') then
 	function Lib:BelongsToSet(id, search)
 		for _, outfit in ipairs(Wardrobe.CurrentConfig.Outfit) do
 			local name = outfit.OutfitName

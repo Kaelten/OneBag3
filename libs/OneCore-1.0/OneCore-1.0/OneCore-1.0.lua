@@ -150,7 +150,7 @@ end
 function OneCore:BuildFrame()
 	for _, bag in pairs(self.bagIndexes) do
 		local size = OneCore:GetContainerNumSlots(bag);
-		local bagType = select(2, GetContainerNumFreeSlots(bag))
+		local bagType = select(2, C_Container.GetContainerNumFreeSlots(bag))
 
 		if not self.frame.bags then
 			self.frame.bags = {}
@@ -165,6 +165,7 @@ function OneCore:BuildFrame()
 			self.frame.bags[bag].size = size
 			self.doOrganization = true
 		end
+	
 
 		for slot = 1, size do
 			local slotkey = ('%s:%s'):format(bag, slot)
@@ -228,7 +229,6 @@ function OneCore:UpdateBag(bag)
 	if not self.frame.bags then
 		return
 	end
-
 	self:BuildFrame()
 	self:OrganizeFrame()
 
@@ -253,7 +253,6 @@ function OneCore:UpdateBag(bag)
 			--ContainerFrameMixin:UpdateCooldowns()
     	end
     end
-
     for slot=1, self.frame.bags[bag].size do
         local slot = self:GetSlot(bag, slot)
 		local bag = slot:GetParent()
@@ -263,34 +262,97 @@ function OneCore:UpdateBag(bag)
 
 		]]
 		-- Remove the blue border kinda scuffed aswell but if it works.. it works ..
-		slot.BattlepayItemTexture:Hide()
-		local icon, itemCount, locked, quality, readable, lootable, itemLink, isFiltered, noValue, itemID, isBound = GetContainerItemInfo(bag:GetID(), slot:GetID())
-		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID()) or IsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
-		if icon then
-			slot:SetItemButtonTexture(icon)
-			slot:SetItemButtonCount(itemCount)
+		if (slot.BattlepayItemTexture) then
+			slot.BattlepayItemTexture:Hide()
+		end	
+
+		local containerInfo = C_Container.GetContainerItemInfo(bag:GetID(), slot:GetID())
+		local itemIsUpgrade = PawnIsContainerItemAnUpgrade and PawnIsContainerItemAnUpgrade(bag:GetID(), slot:GetID())
+		if containerInfo then
+			local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType,
+			itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType,
+			expacID, setID, isCraftingReagent = C_Item.GetItemInfo(containerInfo.hyperlink)
+			if self.db.profile.appearance.showilvl then
+				if (itemLevel and ((classID == Enum.ItemClass.Armor) or (classID == Enum.ItemClass.Weapon))) then
+					if not slot.itemlevelDisplay then
+						slot.itemlevelDisplay = slot:CreateFontString(nil, "OVERLAY",  "GameFontHighlight")
+						slot.itemlevelDisplay:SetPoint("CENTER", 0, 0)
+					end
+					if itemQuality then
+						local qualityColor = ITEM_QUALITY_COLORS[itemQuality]
+						if (self.db.profile.appearance.qualitycolored) then
+							slot.itemlevelDisplay:SetTextColor(qualityColor.r, qualityColor.g, qualityColor.b, 1)
+						else
+							slot.itemlevelDisplay:SetTextColor(1, 1, 1, 1)
+						end
+					end
+					slot.itemlevelDisplay:SetText(itemLevel)
+					slot.itemlevelDisplay:SetFont("Fonts\\FRIZQT__.TTF", 14, "OUTLINE")
+					slot.itemlevelDisplay:Show()
+				end
+			end
+			if slot.itemlevelDisplay and not self.db.profile.appearance.showilvl then
+				slot.itemlevelDisplay:Hide()
+			end
+
+
+			slot:SetItemButtonTexture(containerInfo.iconFileID)
+			slot:SetItemButtonCount(containerInfo.stackCount)
 			-- Add Pawn Support
 			if (itemIsUpgrade) then
 				slot.UpgradeIcon:Show()
 			end
+			-- ProfessionQualityOverlay Support kinda scuffed..
+			quality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(containerInfo.hyperlink)
+
+			if not quality then
+				quality = C_TradeSkillUI.GetItemCraftedQualityByItemInfo(containerInfo.hyperlink)
+			end
+			if quality then
+				if not slot.ProfessionQualityOverlay then
+					slot.ProfessionQualityOverlay = slot:CreateTexture(nil, "OVERLAY");
+					slot.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3, 2);
+					slot.ProfessionQualityOverlay:SetDrawLayer("OVERLAY", 7);
+				end
+				local atlas
+				if (expacID ==  11) then -- Midnight 12.0.1 Fix for diffretents path quality
+					atlas = ("Professions-Icon-Quality-12-Tier%d-Inv"):format(quality);
+				else
+					atlas = ("Professions-Icon-Quality-Tier%d-Inv"):format(quality);
+				end
+				slot.ProfessionQualityOverlay:SetAtlas(atlas, TextureKitConstants.UseAtlasSize);
+				slot.ProfessionQualityOverlay:Show()
+			end
+
+			if slot.ProfessionQualityOverlay and not quality then
+				slot.ProfessionQualityOverlay:Hide()
+			end
 			-- Bandaid cooldown fix start
 			local cooldown = _G[slot:GetName().."Cooldown"]
-			local start, duration, enable = GetContainerItemCooldown(bag:GetID(), slot:GetID())
+			local start, duration, enable = C_Container.GetContainerItemCooldown(bag:GetID(), slot:GetID())
 			CooldownFrame_Set(cooldown, start, duration, enable);
 			if ( duration > 0 and enable == 0 ) then
 				SetItemButtonTextureVertexColor(slot, 0.4, 0.4, 0.4);
 			else
 				SetItemButtonTextureVertexColor(slot, 1, 1, 1);
 			end
-			SetItemButtonDesaturated(slot, false, 0.5, 0.5); -- Fix for 10.0
+			SetItemButtonDesaturated(slot, containerInfo.isLocked, 0.5, 0.5)
 			-- Bandaid cooldown fix stop
 		else
-			slot.UpgradeIcon:Hide()
+
+			if slot.itemlevelDisplay then
+				slot.itemlevelDisplay:Hide()
+			end
+			if(slot.UpgradeIcon) then
+				slot.UpgradeIcon:Hide()
+			end
+			if (slot.ProfessionQualityOverlay) then
+				slot.ProfessionQualityOverlay:Hide()
+			end
 			-- Bandaid fix to remove item's previous location data when we drag it somewhere
 			_G[slot:GetName().."IconTexture"]:Hide()
 			_G[slot:GetName().."Count"]:Hide()
 			_G[slot:GetName().."Cooldown"]:Hide()
-			SetItemButtonDesaturated(slot, false, 0.5, 0.5);
 		end
         self:ColorSlotBorder(slot)
         self:ApplySearchFilter(slot)
@@ -357,7 +419,7 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 
 	local bcolor
 	if not fcolor and bag.type then
-		if bag:IsProfessionBag() then
+		if ((bag:IsProfessionBag()) or (bag:GetID() == 5)) then
 			bcolor = self.db.profile.colors.profession
 		end
 
@@ -365,9 +427,9 @@ function OneCore:ColorSlotBorder(slot, fcolor)
 	end
 
 	if self.db.profile.appearance.rarity and not fcolor and not bcolor then
-		local link = GetContainerItemLink(bag:GetID(), slot:GetID())
+		local link = C_Container.GetContainerItemLink(bag:GetID(), slot:GetID())
 		if link then
-			local rarity = select(3, GetItemInfo(link))
+			local rarity = select(3, C_Item.GetItemInfo(link))
 			if rarity and (rarity > 1 or self.db.profile.appearance.lowlevel) then
 				-- going with this method as it should never produce a point where I don't have a color to work with.
 				color = colorCache[rarity]
@@ -433,7 +495,7 @@ end
 
 function OneCore:ApplySearchFilter(slot)
     if self.searchTerm and #self.searchTerm > 1 then
-        local link = GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
+        local link = C_Container.GetContainerItemLink(slot:GetParent():GetID(), slot:GetID())
         if not link or SearchEngine:Matches(link, self.searchTerm) then
             slot.searchOverlay:Hide()
         else
@@ -463,7 +525,7 @@ end
 
 --- Replacement for GetContainerNumSlots
 function OneCore:GetContainerNumSlots(bagId)
-    return _G.GetContainerNumSlots(bagId)
+    return _G.C_Container.GetContainerNumSlots(bagId)
 end
 
 --- Updates a slot's locked status.
@@ -474,9 +536,8 @@ function OneCore:UpdateItemLock(event, bagid, slotid)
     if bagid == nil or slotid == nil then
         return
     end
-
-    local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bagid, slotid);
-    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), locked, 0.5, 0.5, 0.5);
+    local containerInfo = C_Container.GetContainerItemInfo(bagid, slotid)
+    SetItemButtonDesaturated(self:GetSlot(bagid, slotid), containerInfo.isLocked, 0.5, 0.5, 0.5)
 end
 
 -- slight bastardization of the embed system, using this to setup a lot of static values on the object.

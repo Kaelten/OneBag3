@@ -8,6 +8,7 @@ L["Fourth Bag"] = true
 L["Second Bag"] = true
 L["Specific Bag Filters"] = true
 L["Third Bag"] = true
+L["Ragent Bag"] = true
 L["Toggles the display of your Backpack."] = true
 L["Toggles the display of your First Bag."] = true
 L["Toggles the display of your Fourth Bag."] = true

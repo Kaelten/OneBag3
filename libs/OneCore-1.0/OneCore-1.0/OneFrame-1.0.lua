@@ -192,7 +192,7 @@ end
 -- @param width the width of the frame, defaults to 60
 -- @param height the height of the frame, defaults to 223
 function OneFrame:CreateSideBar(framename, parent, width, height)
-    local sidebar = self:CreateBaseFrame(framename, width or 60, height or 223)
+    local sidebar = self:CreateBaseFrame(framename, width or 60, height or 265)
 
 	sidebar:SetPosition({ parent=parent, attachAt="TOPRIGHT", attachTo="TOPLEFT" })
 
@@ -263,9 +263,11 @@ function OneFrame:CreateMainFrame(framename, moneyType)
 	sidebarButton:SetScript("OnClick", function()
 		if sidebarButton:GetChecked() then
 			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
+            SetCVar("expandBagBar", true)
 			frame.sidebar:Show()
 		else
 			sidebarButton:SetNormalTexture("Interface\\Buttons\\UI-SpellbookIcon-PrevPage-Up")
+            SetCVar("expandBagBar", false)
 			frame.sidebar:Hide()
 		end
 	end)

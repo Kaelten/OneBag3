@@ -299,6 +299,52 @@ function OneConfig:InitializeConfiguration()
 						}
 					}
 				},
+				options = {
+					type = "group",
+					name = L["General Options"],
+					args = {
+						bag = {
+							type = "group",
+							name = L["Item level display"],
+							order = 2,
+							inline = true,
+							plugins = {},
+							args = {
+								description = {
+									order = 1,
+									type = 'description',
+									name = L["These options affect the way %s works with and treats your bags.  You can use them to do some base customization to the way item are shown in your bags."]:format(self.displayName),
+								},
+								showilvl = {
+									order = 2,
+									type = "toggle",
+									name = L["Show iLvl on item"],
+									desc = L["Should show the sort button at the top of the UI."],
+									get = function(info)
+										return self.db.profile.appearance.showilvl
+									end,
+									set = function(info, value)
+										self.db.profile.appearance.showilvl = value
+										self:UpdateFrame()
+									end,
+								},
+								qualitycolored = {
+									order = 3,
+									type = "toggle",
+									name = L["Color iLvl display"],
+									desc = L["Color the item level display to its matching quality. Require \"Show iLvl on item to be checked\""],
+									get = function(info)
+										return self.db.profile.appearance.qualitycolored
+									end,
+									set = function(info, value)
+										self.db.profile.appearance.qualitycolored = value
+										self:UpdateFrame()
+									end,
+								},
+							}
+						}
+					}
+				},
 				colors = {
 					type = "group",
 					name = L["Color Options"],
@@ -495,6 +541,7 @@ function OneConfig:InitializeConfiguration()
 	self.configs.base = baseconfig
 	self.configs.main = AceConfigDialog:AddToBlizOptions(self.displayName, nil, nil, 'general')
 	self.configs.frame = AceConfigDialog:AddToBlizOptions(self.displayName, L["Frame Options"], self.displayName, 'frame')
+	self.configs.options = AceConfigDialog:AddToBlizOptions(self.displayName, L["General Options"], self.displayName, 'options')
 	self.configs.colors = AceConfigDialog:AddToBlizOptions(self.displayName, L["Color Options"], self.displayName, 'colors')
 	self.configs.showbags = AceConfigDialog:AddToBlizOptions(self.displayName, L["Bag Visibility"], self.displayName, 'showbags')
 	self.configs.plugins = AceConfigDialog:AddToBlizOptions(self.displayName, L["Plugins"], self.displayName, 'plugins')
